@@ -1,11 +1,20 @@
 import { Module } from '@nestjs/common';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { ErrorInterceptor } from './common/interceptors/error.interceptor';
+import { joiSchema } from './config/joi.validation';
+import { ClientsModule } from './clients/clients.module';
+import { GarmentsModule } from './garments/garments.module';
+import { NotesModule } from './notes/notes.module';
+import { DetailNotesModule } from './detail_notes/detail_notes.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true,
+      validationSchema: joiSchema,
+      envFilePath: ['.env.development'],
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -17,6 +26,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       autoLoadEntities: true,
       synchronize: true,
     }),
+    ClientsModule,
+    GarmentsModule,
+    NotesModule,
+    DetailNotesModule,
+  ],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ErrorInterceptor,
+    },
   ],
 })
 export class AppModule {}
