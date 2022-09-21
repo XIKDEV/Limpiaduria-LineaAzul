@@ -14,15 +14,14 @@ import { DetailNotesModule } from './detail_notes/detail_notes.module';
   imports: [
     ConfigModule.forRoot({
       validationSchema: joiSchema,
-      envFilePath: ['.env.development'],
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.HOST_BD,
       port: Number(process.env.PORT_BD),
+      database: process.env.BD_NAME,
       username: process.env.USER_BD,
       password: process.env.PASSWORD_BD,
-      database: process.env.BD,
       autoLoadEntities: true,
       synchronize: true,
     }),

@@ -31,6 +31,8 @@ export class Garment {
   })
   createdAt: Date;
 
-  @Column('date')
+  @Column('date', {
+    default: new Date().toLocaleDateString('en-US'),
+  })
   updatedAt: Date;
 }

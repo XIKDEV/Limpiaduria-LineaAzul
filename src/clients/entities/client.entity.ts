@@ -1,17 +1,23 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
+@Entity('clients')
 export class Client {
   @PrimaryGeneratedColumn('identity')
   id: number;
 
-  @Column('text')
+  @Column('text', {
+    nullable: true,
+  })
   name: string;
 
-  @Column('text')
+  @Column('text', {
+    nullable: true,
+  })
   email: string;
 
-  @Column('text')
+  @Column('text', {
+    nullable: true,
+  })
   cellphone: string;
 
   @Column('boolean', {
@@ -24,6 +30,8 @@ export class Client {
   })
   createdAt: Date;
 
-  @Column('date')
+  @Column('date', {
+    default: new Date().toLocaleDateString('en-US'),
+  })
   updatedAt: Date;
 }

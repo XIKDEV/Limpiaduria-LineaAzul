@@ -1,15 +1,15 @@
 import { Exclude, Type } from 'class-transformer';
 
-export class ResponseGenericDto<T> {
+export class ResponseGenericInfoDto<T> {
   @Exclude()
   type: Function;
 
   success: boolean;
 
   @Type((data) => {
-    return data.newObject(new ResponseGenericDto()).type;
+    return data.newObject(new ResponseGenericInfoDto()).type;
   })
-  data: T[];
+  data: T;
 
   message: string;
 
@@ -20,9 +20,9 @@ export class ResponseGenericDto<T> {
   createResponse(
     Success: boolean,
     Message: string,
-    Data: T[] = [],
-  ): ResponseGenericDto<T> {
-    const resp = new ResponseGenericDto<T>();
+    Data: T,
+  ): ResponseGenericInfoDto<T> {
+    const resp = new ResponseGenericInfoDto<T>();
 
     resp.success = Success;
     resp.data = Data;

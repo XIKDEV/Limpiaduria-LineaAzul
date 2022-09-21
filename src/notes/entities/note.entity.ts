@@ -33,6 +33,8 @@ export class Note {
   })
   createdAt: Date;
 
-  @Column('date')
+  @Column('date', {
+    default: new Date().toLocaleDateString('en-US'),
+  })
   updatedAt: Date;
 }
