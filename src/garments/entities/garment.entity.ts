@@ -6,7 +6,7 @@ export class Garment {
   id: number;
 
   @Column('decimal', {
-    nullable: true,
+    unique: true,
   })
   code_garment: number;
 

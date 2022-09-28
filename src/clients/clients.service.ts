@@ -38,38 +38,56 @@ export class ClientsService {
   async findAll() {
     const data = await this.clientRepository.find({
       where: { status: true },
-      select: { name: true, email: true, cellphone: true },
+      select: { id: true, name: true, email: true, cellphone: true },
+      order: {
+        id: 'ASC',
+      },
+      relations: {
+        notes: true,
+      },
     });
 
     return new ResponseGenericDto<ClientListDto>(ClientListDto).createResponse(
       true,
       'Information found',
-      data,
+      data.map((client) => ({
+        ...client,
+        notes: client.notes.map((note) => {
+          const { client, ...noteRest } = note;
+          return { ...noteRest };
+        }),
+      })),
     );
-
-    // return {
-    //   success: true,
-    //   data,
-    //   message: 'Information found'
-    // }
   }
 
   async findOne(id: number) {
-    const data = await this.clientRepository.findOneBy({
-      id: id,
-      status: true,
+    const { notes, ...data } = await this.clientRepository.findOne({
+      where: {
+        id,
+        status: true,
+      },
+      relations: {
+        notes: true,
+      },
     });
 
-    if (!data) {
-      return this.errorCatch.notExitsCatch(id);
-    }
-    if (data == null) {
+    const clientInfo = {
+      ...data,
+      notes: notes.map((note) => {
+        const { client, ...noteRest } = note;
+        return {
+          ...noteRest,
+        };
+      }),
+    };
+
+    if (!data || data == null) {
       return this.errorCatch.notExitsCatch(id);
     }
 
     return new ResponseGenericInfoDto<ClientListDto>(
       ClientListDto,
-    ).createResponse(true, 'Information found', data);
+    ).createResponse(true, 'Information found', clientInfo);
   }
 
   async update(idClient: number, updateClientDto: UpdateClientDto) {
@@ -77,6 +95,7 @@ export class ClientsService {
       const data = await this.clientRepository.preload({
         id: idClient,
         ...updateClientDto,
+        updatedAt: new Date().toLocaleDateString('en-US'),
       });
 
       if (!data) return this.errorCatch.notExitsCatch(idClient);
@@ -99,7 +118,7 @@ export class ClientsService {
     try {
       const data = this.clientRepository.update(
         { id: idClient },
-        { status: false },
+        { status: false, updatedAt: new Date().toLocaleDateString('en-US') },
       );
 
       if (!data) return this.errorCatch.notExitsCatch(idClient);

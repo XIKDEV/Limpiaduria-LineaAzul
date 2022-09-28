@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { NotesService } from './notes.service';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { UpdateNoteDto } from './dto/update-note.dto';
@@ -7,28 +16,58 @@ import { UpdateNoteDto } from './dto/update-note.dto';
 export class NotesController {
   constructor(private readonly notesService: NotesService) {}
 
-  @Post()
+  @Post('RegisterNote')
   create(@Body() createNoteDto: CreateNoteDto) {
     return this.notesService.create(createNoteDto);
   }
 
-  @Get()
+  @Get('NotesList')
   findAll() {
     return this.notesService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.notesService.findOne(+id);
+  @Get('NoteInfo/:id')
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.notesService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateNoteDto: UpdateNoteDto) {
-    return this.notesService.update(+id, updateNoteDto);
+  @Patch('DeliverNote/:id')
+  deliverNote(@Param('id', ParseIntPipe) id: number) {
+    return this.notesService.deliverNote(id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.notesService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.notesService.remove(id);
+  }
+
+  @Get('GarmentsDelivery/:date')
+  garmentsDelivery(@Param('date') date: string) {
+    return this.notesService.garmentsDelivery(date);
+  }
+
+  @Get('GarmentsReceived/:date')
+  garmentsReceived(@Param('date') date: string) {
+    return this.notesService.garmentsReceived(date);
+  }
+
+  @Get('GarmentSumDelivery/:date')
+  garmentSumDelivery(@Param('date') date: string) {
+    return this.notesService.totalGarmentsDelivery(date);
+  }
+
+  @Get('GarmentSumReceive/:date')
+  garmentSumReceive(@Param('date') date: string) {
+    return this.notesService.totalGarmentsReceived(date);
+  }
+
+  @Get('TableGarmentReceive/:date')
+  tableGarmentReceive(@Param('date') date: string) {
+    return this.notesService.tableGarmentReceive(date);
+  }
+
+  @Get('TableGarmentDelivery/:date')
+  tableGarmentDelivery(@Param('date') date: string) {
+    return this.notesService.tableGarmentDelivery(date);
   }
 }

@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Note } from '../../notes/entities/note.entity';
+import {
+  Column,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('clients')
 export class Client {
@@ -34,4 +41,7 @@ export class Client {
     default: new Date().toLocaleDateString('en-US'),
   })
   updatedAt: Date;
+
+  @OneToMany(() => Note, (note) => note.client, { onDelete: 'CASCADE' })
+  notes: Note[];
 }

@@ -8,7 +8,6 @@ import { joiSchema } from './config/joi.validation';
 import { ClientsModule } from './clients/clients.module';
 import { GarmentsModule } from './garments/garments.module';
 import { NotesModule } from './notes/notes.module';
-import { DetailNotesModule } from './detail_notes/detail_notes.module';
 
 @Module({
   imports: [
@@ -28,7 +27,6 @@ import { DetailNotesModule } from './detail_notes/detail_notes.module';
     ClientsModule,
     GarmentsModule,
     NotesModule,
-    DetailNotesModule,
   ],
   providers: [
     {

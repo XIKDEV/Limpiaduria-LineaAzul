@@ -1,15 +1,28 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+
+import { Note } from '../../notes/entities/note.entity';
+import { Garment } from '../../garments/entities/garment.entity';
 
 @Entity({ name: 'detail_notes' })
 export class DetailNote {
   @PrimaryGeneratedColumn('identity')
   id: number;
 
-  @Column('int')
-  id_p: number;
+  @OneToOne(() => Garment, {
+    eager: true,
+  })
+  @JoinColumn()
+  id_g: Garment;
 
-  @Column('int')
-  id_n: number;
+  @ManyToOne(() => Note, (note) => note.details, { onDelete: 'CASCADE' })
+  id_n: Note;
 
   @Column('int')
   quantity: number;

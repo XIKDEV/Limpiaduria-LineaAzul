@@ -1,12 +1,29 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+
+import { DetailNote } from '../../detail_notes/entities/detail_notes.entity';
+import { Client } from '../../clients/entities/client.entity';
 
 @Entity({ name: 'notes' })
 export class Note {
   @PrimaryGeneratedColumn('identity')
   id: number;
 
-  @Column('int')
-  id_c: number;
+  @ManyToOne(() => Client, (client) => client.notes, {
+    cascade: true,
+    eager: true,
+  })
+  client: Client;
+
+  @OneToMany(() => DetailNote, (detailNote) => detailNote.id_n, {
+    cascade: true,
+  })
+  details: DetailNote[];
 
   @Column('decimal')
   amount: number;
@@ -24,17 +41,17 @@ export class Note {
   missing_pay: number;
 
   @Column('boolean', {
-    default: true,
+    default: false,
   })
   status: boolean;
 
   @Column('date', {
     default: new Date().toLocaleDateString('en-US'),
   })
-  createdAt: Date;
+  createdAt: string;
 
   @Column('date', {
     default: new Date().toLocaleDateString('en-US'),
   })
-  updatedAt: Date;
+  updatedAt: string;
 }

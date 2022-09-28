@@ -18,10 +18,7 @@ export class ErrorInterceptor implements NestInterceptor {
       .handle()
       .pipe(
         catchError(async (err) =>
-          new ResponseGenericDto().createResponse(
-            false,
-            err.response.message[0],
-          ),
+          new ResponseGenericDto().createResponse(false, err.response.message),
         ),
       );
   }
