@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ResponseGenericDto } from 'src/common/response/reponse-generic.dto';
-import { ResponseGenericInfoDto } from 'src/common/response/response-generic-info.dto';
 
 import { Repository } from 'typeorm';
 
+import { ResponseGenericInfoDto } from '../common/response/response-generic-info.dto';
+import { ResponseGenericDto } from '../common/response/reponse-generic.dto';
 import { ErrorCatchService } from '../common/error-catch/error-catch.service';
 import { CreateGarmentDto } from './dto/create-garment.dto';
 import { UpdateGarmentDto } from './dto/update-garment.dto';

@@ -1,5 +1,6 @@
 import { IsNotEmpty, IsNumber } from 'class-validator';
-import { Garment } from 'src/garments/entities/garment.entity';
+
+import { Garment } from '../../garments/entities/garment.entity';
 import { Note } from '../entities/note.entity';
 
 export class DetailNoteDto {

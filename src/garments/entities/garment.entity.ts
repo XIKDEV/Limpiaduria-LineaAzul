@@ -1,4 +1,3 @@
-import { DetailNote } from 'src/detail_notes/entities/detail_notes.entity';
 import {
   Column,
   Entity,
@@ -7,6 +6,8 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+
+import { DetailNote } from '../../detail_notes/entities/detail_notes.entity';
 
 @Entity()
 export class Garment {
