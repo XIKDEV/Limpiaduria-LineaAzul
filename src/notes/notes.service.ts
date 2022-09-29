@@ -44,6 +44,7 @@ export class NotesService {
         id,
       );
     } catch (error) {
+      console.log(error);
       return this.errorCatch.errorCatch();
     }
   }
@@ -162,6 +163,7 @@ export class NotesService {
       data,
     });
   }
+
   async garmentsReceived(date: string) {
     const data = await this.noteRepository.count({
       where: {
@@ -238,10 +240,10 @@ export class NotesService {
         .innerJoin('detail_note.id_g', 'garment')
         .addSelect('detail_note.id_g')
         .addSelect('garment.description')
-        .groupBy('note.id, garment.description, detail_note.id_g')
-        .where('createdAt =:date', {
+        .where('note.createdAt =:date', {
           date: date,
         })
+        .groupBy('garment.description, detail_note.id_g')
         .getRawMany();
 
       return new ResponseGenericDto().createResponse(
@@ -254,6 +256,7 @@ export class NotesService {
       return this.errorCatch.errorCatch();
     }
   }
+
   async tableGarmentDelivery(date: string) {
     try {
       const data = await this.noteRepository

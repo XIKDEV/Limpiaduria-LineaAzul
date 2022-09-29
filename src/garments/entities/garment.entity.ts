@@ -1,4 +1,12 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { DetailNote } from 'src/detail_notes/entities/detail_notes.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Garment {
@@ -35,4 +43,7 @@ export class Garment {
     default: new Date().toLocaleDateString('en-US'),
   })
   updatedAt: Date;
+
+  @ManyToOne(() => DetailNote, (detail) => detail.id_g)
+  detailNote: DetailNote;
 }

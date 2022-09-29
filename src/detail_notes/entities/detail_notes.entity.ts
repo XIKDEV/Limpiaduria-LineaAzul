@@ -15,10 +15,9 @@ export class DetailNote {
   @PrimaryGeneratedColumn('identity')
   id: number;
 
-  @OneToOne(() => Garment, {
+  @ManyToOne(() => Garment, (garment) => garment.detailNote, {
     eager: true,
   })
-  @JoinColumn()
   id_g: Garment;
 
   @ManyToOne(() => Note, (note) => note.details, { onDelete: 'CASCADE' })
