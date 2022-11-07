@@ -1,7 +1,9 @@
 import { Note } from '../../notes/entities/note.entity';
 import {
+  Check,
   Column,
   Entity,
+  Index,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -29,16 +31,19 @@ export class Client {
 
   @Column('boolean', {
     default: true,
+    select: false,
   })
   status: boolean;
 
   @Column('date', {
     default: new Date().toLocaleDateString('en-US'),
+    select: false,
   })
   createdAt: Date;
 
   @Column('date', {
     default: new Date().toLocaleDateString('en-US'),
+    select: false,
   })
   updatedAt: Date;
 

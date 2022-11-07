@@ -16,7 +16,7 @@ export class ClientsService {
   constructor(
     @InjectRepository(Client)
     private readonly clientRepository: Repository<Client>,
-    private readonly errorCatch: ErrorCatchService,
+    private readonly errorCatch: ErrorCatchService
   ) {}
 
   async create(createClientDto: CreateClientDto) {
@@ -28,7 +28,7 @@ export class ClientsService {
       return new ResponseGenericInfoDto().createResponse(
         true,
         'Client was created',
-        { id },
+        { id }
       );
     } catch (error) {
       this.errorCatch.errorCatch();
@@ -56,8 +56,22 @@ export class ClientsService {
           const { client, ...noteRest } = note;
           return { ...noteRest };
         }),
-      })),
+      }))
     );
+  }
+
+  async findAllQB() {
+    const data = await this.clientRepository
+      .createQueryBuilder('client')
+      .where('client.status =:status', {
+        status: true,
+      })
+      .leftJoinAndSelect('client.notes', 'notes')
+      .leftJoinAndSelect('notes.details', 'detail_note')
+      .leftJoinAndSelect('detail_note.id_g', 'garment')
+      .getMany();
+
+    return data;
   }
 
   async findOne(id: number) {
@@ -85,9 +99,11 @@ export class ClientsService {
       return this.errorCatch.notExitsCatch(id);
     }
 
-    return new ResponseGenericInfoDto<ClientListDto>(
-      ClientListDto,
-    ).createResponse(true, 'Information found', clientInfo);
+    return new ResponseGenericInfoDto<ClientListDto>(ClientListDto).createResponse(
+      true,
+      'Information found',
+      clientInfo
+    );
   }
 
   async update(idClient: number, updateClientDto: UpdateClientDto) {
@@ -100,14 +116,12 @@ export class ClientsService {
 
       if (!data) return this.errorCatch.notExitsCatch(idClient);
 
-      const { id, name, email, cellphone } = await this.clientRepository.save(
-        data,
-      );
+      const { id, name, email, cellphone } = await this.clientRepository.save(data);
 
       return new ResponseGenericInfoDto().createResponse(
         true,
         'Client was updated',
-        { id, name, email, cellphone },
+        { id, name, email, cellphone }
       );
     } catch (error) {
       this.errorCatch.errorCatch();
@@ -118,7 +132,7 @@ export class ClientsService {
     try {
       const data = this.clientRepository.update(
         { id: idClient },
-        { status: false, updatedAt: new Date().toLocaleDateString('en-US') },
+        { status: false, updatedAt: new Date().toLocaleDateString('en-US') }
       );
 
       if (!data) return this.errorCatch.notExitsCatch(idClient);
@@ -126,7 +140,7 @@ export class ClientsService {
       return new ResponseGenericInfoDto().createResponse(
         true,
         'Client was deleted',
-        { idClient },
+        { idClient }
       );
     } catch (error) {
       return this.errorCatch.errorCatch();

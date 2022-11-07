@@ -15,19 +15,19 @@ export class GarmentsService {
   constructor(
     @InjectRepository(Garment)
     private readonly garmentRepository: Repository<Garment>,
-    private readonly errorCatch: ErrorCatchService,
+    private readonly errorCatch: ErrorCatchService
   ) {}
 
   async create(createGarmentDto: CreateGarmentDto) {
     try {
-      const data = await this.garmentRepository.create(createGarmentDto);
+      const data = this.garmentRepository.create(createGarmentDto);
 
       const { id } = await this.garmentRepository.save(data);
 
       return new ResponseGenericInfoDto().createResponse(
         true,
         'Garment was created',
-        id,
+        id
       );
     } catch (error) {
       return this.errorCatch.errorCatch();
@@ -51,11 +51,7 @@ export class GarmentsService {
       },
     });
 
-    return new ResponseGenericDto().createResponse(
-      true,
-      'Information found',
-      data,
-    );
+    return new ResponseGenericDto().createResponse(true, 'Information found', data);
   }
 
   async findOne(code_garment: number) {
@@ -64,13 +60,12 @@ export class GarmentsService {
       status: true,
     });
 
-    if (!data || data === null)
-      return this.errorCatch.notExitsCatch(code_garment);
+    if (!data || data === null) return this.errorCatch.notExitsCatch(code_garment);
 
     return new ResponseGenericInfoDto().createResponse(
       true,
       'Information found',
-      data,
+      data
     );
   }
 
@@ -82,8 +77,7 @@ export class GarmentsService {
         updatedAt: new Date().toLocaleDateString('en-US'),
       });
 
-      if (!data || !data.status)
-        return this.errorCatch.notExitsCatch(idGarment);
+      if (!data || !data.status) return this.errorCatch.notExitsCatch(idGarment);
 
       const { id, code_garment, description, number_garments, price } =
         await this.garmentRepository.save(data);
@@ -91,7 +85,7 @@ export class GarmentsService {
       return new ResponseGenericInfoDto().createResponse(
         true,
         'Garment was updated',
-        { id, code_garment, description, number_garments, price },
+        { id, code_garment, description, number_garments, price }
       );
     } catch (error) {
       return this.errorCatch.errorCatch();
@@ -102,7 +96,7 @@ export class GarmentsService {
     try {
       const data = await this.garmentRepository.update(
         { id },
-        { status: false, updatedAt: new Date().toLocaleDateString('en-US') },
+        { status: false, updatedAt: new Date().toLocaleDateString('en-US') }
       );
 
       if (!data) return this.errorCatch.notExitsCatch(id);
@@ -110,7 +104,7 @@ export class GarmentsService {
       return new ResponseGenericInfoDto().createResponse(
         true,
         'Garment was deleted',
-        id,
+        id
       );
     } catch (error) {
       return this.errorCatch.errorCatch();

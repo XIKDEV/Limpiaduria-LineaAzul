@@ -47,11 +47,13 @@ export class Note {
 
   @Column('date', {
     default: new Date().toLocaleDateString('en-US'),
+    select: false,
   })
   createdAt: string;
 
   @Column('date', {
     default: new Date().toLocaleDateString('en-US'),
+    select: false,
   })
   updatedAt: string;
 }
