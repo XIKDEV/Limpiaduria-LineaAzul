@@ -17,7 +17,7 @@ export class NotesService {
     private readonly noteRepository: Repository<Note>,
     @InjectRepository(DetailNote)
     private readonly detailNoteRepository: Repository<DetailNote>,
-    private readonly errorCatch: ErrorCatchService,
+    private readonly errorCatch: ErrorCatchService
   ) {}
 
   async create(createNoteDto: CreateNoteDto) {
@@ -31,7 +31,7 @@ export class NotesService {
             id_g: id_g,
             quantity: quantity,
             price: price,
-          }),
+          })
         ),
       });
 
@@ -40,7 +40,7 @@ export class NotesService {
       return new ResponseGenericInfoDto().createResponse(
         true,
         'Note was created',
-        id,
+        id
       );
     } catch (error) {
       console.log(error);
@@ -54,21 +54,30 @@ export class NotesService {
         details: true,
       },
     });
-
     return new ResponseGenericDto().createResponse(
       true,
       'Information found',
       data.map((note) => {
-        const { client, ...noteInfo } = note;
-        const { status, createdAt, updatedAt, ...clientInfo } = client;
+        const { client, amount, missing_pay, id, ...noteInfo } = note;
+        const { status, createdAt, updatedAt, email, cellphone, ...clientInfo } =
+          client;
 
         return {
-          ...noteInfo,
+          id,
+          amount,
+          missing_pay,
           client: clientInfo,
           details: note.details.map((detail) => {
-            const { id_n, id_g, ...detailRest } = detail;
-            const { createdAt, updatedAt, price, status, ...garmentInfo } =
-              id_g;
+            const { id_n, id_g, price: priceInDetail, ...detailRest } = detail;
+            const {
+              createdAt,
+              updatedAt,
+              price,
+              status,
+              id,
+              code_garment,
+              ...garmentInfo
+            } = id_g;
 
             return {
               ...detailRest,
@@ -76,7 +85,7 @@ export class NotesService {
             };
           }),
         };
-      }),
+      })
     );
   }
 
@@ -111,7 +120,7 @@ export class NotesService {
     return new ResponseGenericInfoDto().createResponse(
       true,
       'Information found',
-      noteFind,
+      noteFind
     );
   }
 
@@ -127,7 +136,7 @@ export class NotesService {
       return new ResponseGenericInfoDto().createResponse(
         true,
         'Note was delivered',
-        id,
+        id
       );
     } catch (error) {
       return this.errorCatch.errorCatch();
@@ -143,7 +152,7 @@ export class NotesService {
       return new ResponseGenericInfoDto().createResponse(
         true,
         'Note was canceled',
-        id,
+        id
       );
     } catch (error) {
       return this.errorCatch.errorCatch();
@@ -190,14 +199,10 @@ export class NotesService {
         return new ResponseGenericInfoDto().createResponse(
           false,
           'Not Garment delivery this day',
-          { sum: 0 },
+          { sum: 0 }
         );
 
-      return new ResponseGenericInfoDto().createResponse(
-        true,
-        'Info found',
-        data,
-      );
+      return new ResponseGenericInfoDto().createResponse(true, 'Info found', data);
     } catch (error) {
       return this.errorCatch.errorCatch();
     }
@@ -217,14 +222,10 @@ export class NotesService {
         return new ResponseGenericInfoDto().createResponse(
           false,
           'Not Garment delivery this day',
-          { sum: 0 },
+          { sum: 0 }
         );
 
-      return new ResponseGenericInfoDto().createResponse(
-        true,
-        'Info found',
-        data,
-      );
+      return new ResponseGenericInfoDto().createResponse(true, 'Info found', data);
     } catch (error) {
       return this.errorCatch.errorCatch();
     }
@@ -245,11 +246,7 @@ export class NotesService {
         .groupBy('garment.description, detail_note.id_g')
         .getRawMany();
 
-      return new ResponseGenericDto().createResponse(
-        true,
-        'count finish',
-        data,
-      );
+      return new ResponseGenericDto().createResponse(true, 'count finish', data);
     } catch (error) {
       console.log(error);
       return this.errorCatch.errorCatch();
@@ -275,14 +272,10 @@ export class NotesService {
       if (data.length == 0)
         return new ResponseGenericDto().createResponse(
           false,
-          'Not Garment Delivery',
+          'Not Garment Delivery'
         );
 
-      return new ResponseGenericDto().createResponse(
-        true,
-        'count finish',
-        data,
-      );
+      return new ResponseGenericDto().createResponse(true, 'count finish', data);
     } catch (error) {
       console.log(error);
       return this.errorCatch.errorCatch();
