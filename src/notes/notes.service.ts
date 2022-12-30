@@ -53,6 +53,9 @@ export class NotesService {
       relations: {
         details: true,
       },
+      where: {
+        status: false,
+      },
     });
     return new ResponseGenericDto().createResponse(
       true,
@@ -127,6 +130,7 @@ export class NotesService {
   async deliverNote(id: number) {
     try {
       const data = await this.noteRepository.update(id, {
+        missing_pay: 0,
         status: true,
         updatedAt: new Date().toLocaleDateString('en-US'),
       });
