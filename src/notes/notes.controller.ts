@@ -31,7 +31,7 @@ export class NotesController {
     return this.notesService.findOne(id);
   }
 
-  @Patch('DeliverNote/:id')
+  @Post('DeliverNote/:id')
   deliverNote(@Param('id', ParseIntPipe) id: number) {
     return this.notesService.deliverNote(id);
   }
