@@ -25,6 +25,10 @@ export class NotesController {
   findAll() {
     return this.notesService.findAll();
   }
+  @Get('NotesListSearch')
+  findAllSearchService() {
+    return this.notesService.findAllSearchService();
+  }
 
   @Get('NoteInfo/:id')
   findOne(@Param('id', ParseIntPipe) id: number) {

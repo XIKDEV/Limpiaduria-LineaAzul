@@ -61,12 +61,71 @@ export class NotesService {
       true,
       'Information found',
       data.map((note) => {
-        const { client, amount, missing_pay, id, ...noteInfo } = note;
+        const {
+          client,
+          amount,
+          missing_pay,
+          id,
+          createdAt: created,
+          ...noteInfo
+        } = note;
         const { status, createdAt, updatedAt, email, cellphone, ...clientInfo } =
           client;
 
         return {
           id,
+          created,
+          amount,
+          missing_pay,
+          client: clientInfo,
+          details: note.details.map((detail) => {
+            const { id_n, id_g, price: priceInDetail, ...detailRest } = detail;
+            const {
+              createdAt,
+              updatedAt,
+              price,
+              status,
+              id,
+              code_garment,
+              ...garmentInfo
+            } = id_g;
+
+            return {
+              ...detailRest,
+              garment: garmentInfo,
+            };
+          }),
+        };
+      })
+    );
+  }
+
+  async findAllSearchService() {
+    const data = await this.noteRepository.find({
+      relations: {
+        details: true,
+      },
+    });
+    return new ResponseGenericDto().createResponse(
+      true,
+      'Information found',
+      data.map((note) => {
+        const {
+          client,
+          amount,
+          missing_pay,
+          id,
+          status: statusNote,
+          createdAt: created,
+          ...noteInfo
+        } = note;
+        const { status, createdAt, updatedAt, email, cellphone, ...clientInfo } =
+          client;
+
+        return {
+          id,
+          created,
+          statusNote,
           amount,
           missing_pay,
           client: clientInfo,
