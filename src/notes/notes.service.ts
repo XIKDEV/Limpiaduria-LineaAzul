@@ -230,9 +230,7 @@ export class NotesService {
       },
     });
 
-    return new ResponseGenericInfoDto().createResponse(true, 'Count finish', {
-      data,
-    });
+    return new ResponseGenericInfoDto().createResponse(true, 'Count finish', data);
   }
 
   async garmentsReceived(date: string) {
@@ -242,9 +240,7 @@ export class NotesService {
       },
     });
 
-    return new ResponseGenericInfoDto().createResponse(true, 'Count finish', {
-      data,
-    });
+    return new ResponseGenericInfoDto().createResponse(true, 'Count finish', data);
   }
 
   async totalGarmentsDelivery(date: string) {
@@ -252,20 +248,23 @@ export class NotesService {
       const data = await this.noteRepository
         .createQueryBuilder('note')
         .select('SUM(note.total_garments)')
-        .where('note.createdAt =:date and note.status =:status', {
+        .where('note.updatedAt =:date and note.status =:status', {
           date: date,
           status: true,
         })
         .getRawOne();
-
       if (data.sum === null)
         return new ResponseGenericInfoDto().createResponse(
           false,
           'Not Garment delivery this day',
-          { sum: 0 }
+          0
         );
 
-      return new ResponseGenericInfoDto().createResponse(true, 'Info found', data);
+      return new ResponseGenericInfoDto().createResponse(
+        true,
+        'Info found',
+        Number(data.sum)
+      );
     } catch (error) {
       return this.errorCatch.errorCatch();
     }
@@ -276,7 +275,7 @@ export class NotesService {
       const data = await this.noteRepository
         .createQueryBuilder('note')
         .select('SUM(note.total_garments)')
-        .where('note.updatedAt =:date', {
+        .where('note.createdAt =:date', {
           date: date,
         })
         .getRawOne();
@@ -285,7 +284,7 @@ export class NotesService {
         return new ResponseGenericInfoDto().createResponse(
           false,
           'Not Garment delivery this day',
-          { sum: 0 }
+          Number(data.sum)
         );
 
       return new ResponseGenericInfoDto().createResponse(true, 'Info found', data);
