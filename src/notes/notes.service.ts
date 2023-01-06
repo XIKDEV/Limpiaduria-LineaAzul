@@ -287,7 +287,11 @@ export class NotesService {
           Number(data.sum)
         );
 
-      return new ResponseGenericInfoDto().createResponse(true, 'Info found', data);
+      return new ResponseGenericInfoDto().createResponse(
+        true,
+        'Info found',
+        Number(data.sum)
+      );
     } catch (error) {
       return this.errorCatch.errorCatch();
     }
@@ -307,8 +311,14 @@ export class NotesService {
         })
         .groupBy('garment.description, detail_note.id_g')
         .getRawMany();
-
-      return new ResponseGenericDto().createResponse(true, 'count finish', data);
+      const newData = data.map(
+        ({ garment_description, quantitygarments, idGId }) => ({
+          garmentDescription: garment_description,
+          quantityGarments: Number(quantitygarments),
+          id: idGId,
+        })
+      );
+      return new ResponseGenericDto().createResponse(true, 'count finish', newData);
     } catch (error) {
       console.log(error);
       return this.errorCatch.errorCatch();
@@ -325,7 +335,7 @@ export class NotesService {
         .addSelect('detail_note.id_g')
         .addSelect('garment.description')
         .groupBy('note.id, garment.description, detail_note.id_g')
-        .where('note.createdAt =:date and note.status =:status', {
+        .where('note.updatedAt =:date and note.status =:status', {
           date: date,
           status: true,
         })
@@ -337,7 +347,14 @@ export class NotesService {
           'Not Garment Delivery'
         );
 
-      return new ResponseGenericDto().createResponse(true, 'count finish', data);
+      const newData = data.map(
+        ({ garment_description, quantitygarments, idGId }) => ({
+          garmentDescription: garment_description,
+          quantityGarments: Number(quantitygarments),
+          id: idGId,
+        })
+      );
+      return new ResponseGenericDto().createResponse(true, 'count finish', newData);
     } catch (error) {
       console.log(error);
       return this.errorCatch.errorCatch();
