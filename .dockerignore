@@ -1,0 +1,7 @@
+.gitignore
+.git
+pnpm-lock.yaml
+postgres/
+node_modules/
+dist/
+docker-compose.yaml
