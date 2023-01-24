@@ -18,6 +18,7 @@ RUN yarn install --prod --frozen-lockfile
 FROM node:18.13.0-slim as prod
 EXPOSE 3000
 WORKDIR /app
+ENV APP_VERSION=${APP_VERSION}
 COPY --from=prod-deps /app/node_modules ./node_modules
 COPY --from=prod-builder /app/dist ./dist
 CMD [ "node", "dist/main.js" ]
