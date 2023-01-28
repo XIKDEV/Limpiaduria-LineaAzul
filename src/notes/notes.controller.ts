@@ -3,14 +3,13 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   ParseIntPipe,
 } from '@nestjs/common';
+
 import { NotesService } from './notes.service';
 import { CreateNoteDto } from './dto/create-note.dto';
-import { UpdateNoteDto } from './dto/update-note.dto';
 
 @Controller('notes')
 export class NotesController {
@@ -19,6 +18,11 @@ export class NotesController {
   @Post('RegisterNote')
   create(@Body() createNoteDto: CreateNoteDto) {
     return this.notesService.create(createNoteDto);
+  }
+
+  @Get('NewFolio')
+  newFolio() {
+    return this.notesService.newFolio();
   }
 
   @Get('NotesList')

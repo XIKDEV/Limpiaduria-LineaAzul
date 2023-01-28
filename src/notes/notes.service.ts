@@ -48,6 +48,24 @@ export class NotesService {
     }
   }
 
+  async newFolio() {
+    try {
+      const data = await this.noteRepository.find({
+        order: {
+          id: 'ASC'
+        },
+        select: { id: true },
+      });
+      if (!data.length) {
+        return new ResponseGenericInfoDto().createResponse(true, 'New Folio', { id: 1 });
+      }
+      const newFolio = data.pop().id + 1;
+      return new ResponseGenericInfoDto().createResponse(true, 'New Folio', { id: newFolio });
+    } catch (error) {
+      return this.errorCatch.errorCatch();
+    }
+  }
+
   async findAll() {
     const data = await this.noteRepository.find({
       relations: {
