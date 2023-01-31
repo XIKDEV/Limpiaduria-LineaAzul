@@ -27,3 +27,15 @@ services:
         PASSWORD_BD: ${PASSWORD_BD}
         BD_NAME: ${BD_NAME}
       restart: always
+
+  front:
+    depends_on:
+      - app
+    container_name: front_lla
+    image: alderickrios/front_limpiaduria_linea_azul:mimir
+    environment:
+      VITE_REACT_API_URL: ${VITE_REACT_API_URL}
+    restart: always
+    ports:
+      - "80:80"
+    
