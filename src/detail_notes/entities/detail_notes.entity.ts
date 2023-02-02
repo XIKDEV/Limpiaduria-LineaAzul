@@ -28,4 +28,23 @@ export class DetailNote {
 
   @Column('decimal')
   price: number;
+
+  @Column('boolean', {
+    default: false,
+    select: false,
+  })
+  active: boolean;
+
+  @Column('date', {
+    default: new Date().toLocaleDateString('en-US'),
+  })
+  createdAt: string;
+
+  @Column('date', {
+    default: new Date().toLocaleDateString('en-US'),
+    select: false,
+  })
+  updatedAt: string;
+
+
 }

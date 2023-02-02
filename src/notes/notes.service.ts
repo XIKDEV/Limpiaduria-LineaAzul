@@ -73,6 +73,7 @@ export class NotesService {
       },
       where: {
         status: false,
+        cancel: false,
       },
     });
     return new ResponseGenericDto().createResponse(
@@ -123,6 +124,9 @@ export class NotesService {
       relations: {
         details: true,
       },
+      where: {
+        cancel: false
+      },
     });
     return new ResponseGenericDto().createResponse(
       true,
@@ -171,7 +175,7 @@ export class NotesService {
 
   async findOne(id: number) {
     const { client, ...data } = await this.noteRepository.findOne({
-      where: { id },
+      where: { id, cancel: false },
       relations: {
         details: true,
       },
@@ -224,11 +228,24 @@ export class NotesService {
     }
   }
 
-  async remove(id: number) {
+  async remove(id: any) {
     try {
-      const data = await this.noteRepository.delete({ id });
+      const data = await this.noteRepository.preload({
+        id,
+        cancel: true,
+        updatedAt: new Date().toLocaleDateString('en-US'),
+      });
+
+      const deleteDetail = await this.detailNoteRepository.preload({
+        id_n: id,
+        active: false,
+        updatedAt: new Date().toLocaleDateString('en-US'),
+      })
 
       if (!data) return this.errorCatch.notExitsCatch(id);
+      
+      await this.noteRepository.save(data);
+      await this.detailNoteRepository.save(deleteDetail);
 
       return new ResponseGenericInfoDto().createResponse(
         true,
