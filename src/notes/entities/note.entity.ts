@@ -47,7 +47,7 @@ export class Note {
 
   @Column('boolean', {
     default: false,
-    select: false
+    // select: false
   })
   cancel: boolean;
 

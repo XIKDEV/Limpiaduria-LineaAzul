@@ -236,8 +236,9 @@ export class NotesService {
         updatedAt: new Date().toLocaleDateString('en-US'),
       });
 
-      const deleteDetail = await this.detailNoteRepository.preload({
+      await this.detailNoteRepository.update({
         id_n: id,
+      }, {
         active: false,
         updatedAt: new Date().toLocaleDateString('en-US'),
       })
@@ -245,7 +246,6 @@ export class NotesService {
       if (!data) return this.errorCatch.notExitsCatch(id);
       
       await this.noteRepository.save(data);
-      await this.detailNoteRepository.save(deleteDetail);
 
       return new ResponseGenericInfoDto().createResponse(
         true,
@@ -253,6 +253,7 @@ export class NotesService {
         id
       );
     } catch (error) {
+      console.log(error)
       return this.errorCatch.errorCatch();
     }
   }
