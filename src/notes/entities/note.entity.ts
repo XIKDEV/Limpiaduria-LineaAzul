@@ -45,9 +45,14 @@ export class Note {
   })
   status: boolean;
 
+  @Column('boolean', {
+    default: false,
+    // select: false
+  })
+  cancel: boolean;
+
   @Column('date', {
     default: new Date().toLocaleDateString('en-US'),
-    select: false,
   })
   createdAt: string;
 

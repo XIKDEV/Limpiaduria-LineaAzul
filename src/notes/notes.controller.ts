@@ -3,14 +3,13 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   ParseIntPipe,
 } from '@nestjs/common';
+
 import { NotesService } from './notes.service';
 import { CreateNoteDto } from './dto/create-note.dto';
-import { UpdateNoteDto } from './dto/update-note.dto';
 
 @Controller('notes')
 export class NotesController {
@@ -21,9 +20,18 @@ export class NotesController {
     return this.notesService.create(createNoteDto);
   }
 
+  @Get('NewFolio')
+  newFolio() {
+    return this.notesService.newFolio();
+  }
+
   @Get('NotesList')
   findAll() {
     return this.notesService.findAll();
+  }
+  @Get('NotesListSearch')
+  findAllSearchService() {
+    return this.notesService.findAllSearchService();
   }
 
   @Get('NoteInfo/:id')
@@ -31,7 +39,7 @@ export class NotesController {
     return this.notesService.findOne(id);
   }
 
-  @Patch('DeliverNote/:id')
+  @Post('DeliverNote/:id')
   deliverNote(@Param('id', ParseIntPipe) id: number) {
     return this.notesService.deliverNote(id);
   }
