@@ -8,12 +8,16 @@ import {
   Delete,
   ParseIntPipe,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 
+import { ERestApi } from '../common/interfaces';
+import { Swagger } from '../common';
 import { ClientsService } from './clients.service';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
 
 @Controller('clients')
+@ApiTags('Client')
 export class ClientsController {
   constructor(private readonly clientsService: ClientsService) {}
 
@@ -22,7 +26,11 @@ export class ClientsController {
     return this.clientsService.create(createClientDto);
   }
 
-  @Get('ClientsList')
+  @Swagger({
+    restApi: ERestApi.get,
+    url: 'ClientsList',
+    modules: 'Client',
+  })
   findAll() {
     return this.clientsService.findAll();
   }
@@ -35,7 +43,7 @@ export class ClientsController {
   @Patch('UpdateClient/:id')
   update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateClientDto: UpdateClientDto,
+    @Body() updateClientDto: UpdateClientDto
   ) {
     return this.clientsService.update(id, updateClientDto);
   }

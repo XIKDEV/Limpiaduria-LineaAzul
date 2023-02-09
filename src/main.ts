@@ -17,14 +17,14 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       forbidNonWhitelisted: true,
-    }),
+    })
   );
 
   const config = new DocumentBuilder()
     .setTitle('Limpiaduria Linea Azul')
     .setDescription('Punto de venta de limpiaduria linea azul')
     .setVersion('2.0')
-    .addServer('localhost:3000/api/v2')
+    .addServer('http://localhost:3000/')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
