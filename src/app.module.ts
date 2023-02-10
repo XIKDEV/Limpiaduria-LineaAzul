@@ -7,7 +7,6 @@ import { joiSchema } from './config/joi.validation';
 import { ClientsModule } from './clients/clients.module';
 import { GarmentsModule } from './garments/garments.module';
 import { NotesModule } from './notes/notes.module';
-import { ErrorInterceptor } from './common/interceptors/error.interceptor';
 import { CatchFilter } from './common/filter/catch.filter';
 
 @Module({
@@ -30,10 +29,6 @@ import { CatchFilter } from './common/filter/catch.filter';
     NotesModule,
   ],
   providers: [
-    // {
-    //   provide: APP_INTERCEPTOR,
-    //   useClass: ErrorInterceptor,
-    // },
     {
       provide: APP_FILTER,
       useClass: CatchFilter,
