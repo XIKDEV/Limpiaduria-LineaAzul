@@ -24,7 +24,10 @@ export class DetailNote {
   id_n: Note;
 
   @Column('int')
-  quantity: number;
+  quantity_receive: number;
+
+  @Column('int')
+  quantity_by_garments: number;
 
   @Column('decimal')
   price: number;
@@ -45,6 +48,4 @@ export class DetailNote {
     select: false,
   })
   updatedAt: string;
-
-
 }

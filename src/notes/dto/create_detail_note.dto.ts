@@ -14,7 +14,10 @@ export class DetailNoteDto {
 
   @IsNumber()
   @IsNotEmpty()
-  quantity: number;
+  quantity_receive: number;
+  @IsNumber()
+  @IsNotEmpty()
+  quantity_by_garments: number;
 
   @IsNumber()
   @IsNotEmpty()

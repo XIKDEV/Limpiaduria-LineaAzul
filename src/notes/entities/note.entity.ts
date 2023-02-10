@@ -1,4 +1,5 @@
 import {
+  AfterLoad,
   Column,
   Entity,
   ManyToOne,
@@ -8,6 +9,7 @@ import {
 
 import { DetailNote } from '../../detail_notes/entities/detail_notes.entity';
 import { Client } from '../../clients/entities/client.entity';
+import { Transform } from 'class-transformer';
 
 @Entity({ name: 'notes' })
 export class Note {
@@ -47,7 +49,6 @@ export class Note {
 
   @Column('boolean', {
     default: false,
-    // select: false
   })
   cancel: boolean;
 
@@ -61,4 +62,12 @@ export class Note {
     select: false,
   })
   updatedAt: string;
+
+  @AfterLoad()
+  stringToNumber(): void {
+    this.amount = Number(this.amount);
+    this.client_pay = Number(this.client_pay);
+    this.change = Number(this.change);
+    this.missing_pay = Number(this.missing_pay);
+  }
 }

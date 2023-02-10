@@ -26,12 +26,14 @@ export class NotesService {
 
       const data = this.noteRepository.create({
         ...createDetail,
-        details: details.map(({ id_g, price, quantity }) =>
-          this.detailNoteRepository.create({
-            id_g: id_g,
-            quantity: quantity,
-            price: price,
-          })
+        details: details.map(
+          ({ id_g, price, quantity_receive, quantity_by_garments }) =>
+            this.detailNoteRepository.create({
+              id_g: id_g,
+              quantity_receive,
+              quantity_by_garments,
+              price: price,
+            })
         ),
       });
 
@@ -52,15 +54,19 @@ export class NotesService {
     try {
       const data = await this.noteRepository.find({
         order: {
-          id: 'ASC'
+          id: 'ASC',
         },
         select: { id: true },
       });
       if (!data.length) {
-        return new ResponseGenericInfoDto().createResponse(true, 'New Folio', { id: 1 });
+        return new ResponseGenericInfoDto().createResponse(true, 'New Folio', {
+          id: 1,
+        });
       }
       const newFolio = data.pop().id + 1;
-      return new ResponseGenericInfoDto().createResponse(true, 'New Folio', { id: newFolio });
+      return new ResponseGenericInfoDto().createResponse(true, 'New Folio', {
+        id: newFolio,
+      });
     } catch (error) {
       return this.errorCatch.errorCatch();
     }
@@ -76,6 +82,7 @@ export class NotesService {
         cancel: false,
       },
     });
+    console.log(data);
     return new ResponseGenericDto().createResponse(
       true,
       'Information found',
@@ -85,16 +92,17 @@ export class NotesService {
           amount,
           missing_pay,
           id,
+          change,
           createdAt: created,
           ...noteInfo
         } = note;
         const { status, createdAt, updatedAt, email, cellphone, ...clientInfo } =
           client;
-
         return {
           id,
           created,
           amount,
+          change,
           missing_pay,
           client: clientInfo,
           details: note.details.map((detail) => {
@@ -125,7 +133,7 @@ export class NotesService {
         details: true,
       },
       where: {
-        cancel: false
+        cancel: false,
       },
     });
     return new ResponseGenericDto().createResponse(
@@ -236,15 +244,18 @@ export class NotesService {
         updatedAt: new Date().toLocaleDateString('en-US'),
       });
 
-      await this.detailNoteRepository.update({
-        id_n: id,
-      }, {
-        active: false,
-        updatedAt: new Date().toLocaleDateString('en-US'),
-      })
+      await this.detailNoteRepository.update(
+        {
+          id_n: id,
+        },
+        {
+          active: false,
+          updatedAt: new Date().toLocaleDateString('en-US'),
+        }
+      );
 
       if (!data) return this.errorCatch.notExitsCatch(id);
-      
+
       await this.noteRepository.save(data);
 
       return new ResponseGenericInfoDto().createResponse(
@@ -253,7 +264,7 @@ export class NotesService {
         id
       );
     } catch (error) {
-      console.log(error)
+      console.log(error);
       return this.errorCatch.errorCatch();
     }
   }
