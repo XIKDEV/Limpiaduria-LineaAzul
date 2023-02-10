@@ -30,10 +30,10 @@ import { CatchFilter } from './common/filter/catch.filter';
     NotesModule,
   ],
   providers: [
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: ErrorInterceptor,
-    },
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: ErrorInterceptor,
+    // },
     {
       provide: APP_FILTER,
       useClass: CatchFilter,

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   CallHandler,
   ExecutionContext,
   Injectable,
@@ -15,7 +16,7 @@ export class ErrorInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       catchError(async (err) => {
-        throw new UnprocessableEntityException(
+        throw new BadRequestException(
           new ResponseGenericDto().createResponse(false, err.response.message)
         );
       })

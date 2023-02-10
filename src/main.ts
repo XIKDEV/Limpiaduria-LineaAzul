@@ -13,7 +13,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api/v2');
 
-  app.useGlobalInterceptors(new ErrorInterceptor());
+  // app.useGlobalInterceptors(new ErrorInterceptor());
 
   app.useGlobalFilters(new CatchFilter());
 

@@ -119,7 +119,7 @@ export class ClientsService {
         updatedAt: new Date().toLocaleDateString('en-US'),
       });
 
-      if (!data) throw new ConflictException();
+      if (!data) throw new Error('testing');
 
       const { id, name, email, cellphone } = await this.clientRepository.save(data);
 
@@ -129,8 +129,8 @@ export class ClientsService {
         { id, name, email, cellphone }
       );
     } catch (error) {
-      console.log(error);
-      return this.errorCatch.errorCatch();
+      if (error.message === 'testing')
+        return this.errorCatch.notExitsCatch(idClient, 'Client');
     }
   }
 
