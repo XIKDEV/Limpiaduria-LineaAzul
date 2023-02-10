@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
@@ -10,6 +14,7 @@ import { Client } from './entities/client.entity';
 import { ClientListDto } from './dto/client-list.dto';
 import { ResponseGenericInfoDto } from '../common/response/response-generic-info.dto';
 import { ErrorCatchService } from '../common/error-catch/error-catch.service';
+import { response } from 'express';
 
 @Injectable()
 export class ClientsService {
@@ -114,7 +119,7 @@ export class ClientsService {
         updatedAt: new Date().toLocaleDateString('en-US'),
       });
 
-      if (!data) return this.errorCatch.notExitsCatch(idClient);
+      if (!data) throw new ConflictException();
 
       const { id, name, email, cellphone } = await this.clientRepository.save(data);
 
@@ -124,7 +129,8 @@ export class ClientsService {
         { id, name, email, cellphone }
       );
     } catch (error) {
-      this.errorCatch.errorCatch();
+      console.log(error);
+      return this.errorCatch.errorCatch();
     }
   }
 

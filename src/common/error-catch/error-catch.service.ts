@@ -1,4 +1,9 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 
 import { ResponseGenericDto } from '../response/reponse-generic.dto';
 
@@ -8,15 +13,12 @@ export class ErrorCatchService {
     throw new InternalServerErrorException(
       new ResponseGenericDto().createResponse(
         false,
-        'Unexpected error, check the server',
-      ),
+        'Unexpected error, check the server'
+      )
     );
   }
 
-  notExitsCatch(id: number) {
-    return new ResponseGenericDto().createResponse(
-      false,
-      `This client not exists with id: ${id}`,
-    );
+  notExitsCatch(id: number, module?: string) {
+    throw new NotFoundException(`${module} was not found with id: ${id}`);
   }
 }
