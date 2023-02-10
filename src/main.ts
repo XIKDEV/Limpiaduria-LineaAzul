@@ -21,7 +21,7 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,
       forbidNonWhitelisted: true,
-      errorHttpStatusCode: 409,
+      errorHttpStatusCode: 422,
     })
   );
 
