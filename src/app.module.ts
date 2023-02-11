@@ -13,6 +13,7 @@ import { CatchFilter } from './common/filter/catch.filter';
   imports: [
     ConfigModule.forRoot({
       validationSchema: joiSchema,
+      envFilePath: ['.env', '.env.prod'],
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
