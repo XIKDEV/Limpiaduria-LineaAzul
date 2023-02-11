@@ -4,21 +4,29 @@ import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 export class CreateGarmentDto {
   @IsNumber()
   @IsNotEmpty()
-  @ApiProperty()
+  @ApiProperty({
+    example: 1.2,
+  })
   code_garment: number;
 
   @IsString()
   @IsNotEmpty()
-  @ApiProperty()
+  @ApiProperty({
+    example: 'Falda',
+  })
   description: string;
 
   @IsNumber()
   @IsNotEmpty()
-  @ApiProperty()
+  @ApiProperty({
+    example: 2,
+  })
   number_garments: number;
 
   @IsNumber()
   @IsNotEmpty()
-  @ApiProperty()
+  @ApiProperty({
+    example: 100.5,
+  })
   price: number;
 }

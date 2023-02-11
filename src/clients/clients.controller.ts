@@ -1,16 +1,7 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  ParseIntPipe,
-} from '@nestjs/common';
+import { Controller, Body, Param, ParseIntPipe } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
-import { Swagger, IdParamDto, ERestApi } from '../common';
+import { Swagger, ERestApi } from '../common';
 import { ClientsService } from './clients.service';
 import { UpdateClientDto, CreateClientDto } from './dto';
 
@@ -39,8 +30,8 @@ export class ClientsController {
     restApi: ERestApi.getOne,
     url: 'ClientInfo/:id',
   })
-  findOne(@Param('id', ParseIntPipe) id: IdParamDto) {
-    return this.clientsService.findOne(id.id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.clientsService.findOne(id);
   }
 
   @Swagger({
@@ -48,17 +39,17 @@ export class ClientsController {
     url: 'UpdateClient/:id',
   })
   update(
-    @Param('id', ParseIntPipe) id: IdParamDto,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateClientDto: UpdateClientDto
   ) {
-    return this.clientsService.update(id.id, updateClientDto);
+    return this.clientsService.update(id, updateClientDto);
   }
 
   @Swagger({
     restApi: ERestApi.delete,
     url: 'DeleteClient/:id',
   })
-  remove(@Param('id', ParseIntPipe) id: IdParamDto) {
-    return this.clientsService.remove(id.id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.clientsService.remove(id);
   }
 }

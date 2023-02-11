@@ -13,7 +13,11 @@ import {
 } from '@nestjs/swagger';
 
 import { EGenericResponse, ERestApi, ISwagger } from '../interfaces';
-import { ResponseGenericDto, ResponseGenericInfoDto } from '../response';
+import {
+  ResponseGenericDto,
+  ResponseGenericErrorDto,
+  ResponseGenericInfoDto,
+} from '../response';
 
 export const Swagger = ({ restApi, url, description }: ISwagger) => {
   switch (restApi) {
@@ -22,7 +26,7 @@ export const Swagger = ({ restApi, url, description }: ISwagger) => {
         Get(url),
         ApiInternalServerErrorResponse({
           description: EGenericResponse.serverError,
-          type: ResponseGenericDto,
+          type: ResponseGenericErrorDto,
         }),
         ApiResponse({
           description: description || EGenericResponse.found,
@@ -40,15 +44,15 @@ export const Swagger = ({ restApi, url, description }: ISwagger) => {
         }),
         ApiInternalServerErrorResponse({
           description: EGenericResponse.serverError,
-          type: ResponseGenericDto,
+          type: ResponseGenericErrorDto,
         }),
         ApiConflictResponse({
           description: EGenericResponse.conflictError,
-          type: ResponseGenericDto,
+          type: ResponseGenericErrorDto,
         }),
         ApiUnprocessableEntityResponse({
           description: EGenericResponse.unprocessableEntity,
-          type: ResponseGenericDto,
+          type: ResponseGenericErrorDto,
         })
       );
     case ERestApi.post:
@@ -61,11 +65,11 @@ export const Swagger = ({ restApi, url, description }: ISwagger) => {
         }),
         ApiInternalServerErrorResponse({
           description: EGenericResponse.serverError,
-          type: ResponseGenericDto,
+          type: ResponseGenericErrorDto,
         }),
         ApiUnprocessableEntityResponse({
           description: EGenericResponse.unprocessableEntity,
-          type: ResponseGenericDto,
+          type: ResponseGenericErrorDto,
         })
       );
     case ERestApi.patch:
@@ -78,15 +82,15 @@ export const Swagger = ({ restApi, url, description }: ISwagger) => {
         }),
         ApiInternalServerErrorResponse({
           description: EGenericResponse.serverError,
-          type: ResponseGenericDto,
+          type: ResponseGenericErrorDto,
         }),
         ApiUnprocessableEntityResponse({
           description: EGenericResponse.unprocessableEntity,
-          type: ResponseGenericDto,
+          type: ResponseGenericErrorDto,
         }),
         ApiConflictResponse({
           description: EGenericResponse.conflictError,
-          type: ResponseGenericDto,
+          type: ResponseGenericErrorDto,
         })
       );
     case ERestApi.delete:
@@ -103,11 +107,11 @@ export const Swagger = ({ restApi, url, description }: ISwagger) => {
         }),
         ApiUnprocessableEntityResponse({
           description: EGenericResponse.unprocessableEntity,
-          type: ResponseGenericDto,
+          type: ResponseGenericErrorDto,
         }),
         ApiConflictResponse({
           description: EGenericResponse.conflictError,
-          type: ResponseGenericDto,
+          type: ResponseGenericErrorDto,
         })
       );
     default:

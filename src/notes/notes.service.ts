@@ -58,7 +58,7 @@ export class NotesService {
       return new ResponseGenericInfoDto().createResponse(
         true,
         EGenericResponse.create,
-        id
+        { id }
       );
     } catch (error) {
       return this.errorCatch.exceptionsOptions(error);
@@ -252,7 +252,7 @@ export class NotesService {
       return new ResponseGenericInfoDto().createResponse(
         true,
         EGenericResponse.noteDelivery,
-        id
+        { id }
       );
     } catch (error) {
       return this.errorCatch.exceptionsOptions(error);
@@ -284,7 +284,7 @@ export class NotesService {
       return new ResponseGenericInfoDto().createResponse(
         true,
         EGenericResponse.noteCancel,
-        id
+        { id }
       );
     } catch (error) {
       return this.errorCatch.exceptionsOptions(error);
@@ -303,7 +303,7 @@ export class NotesService {
       return new ResponseGenericInfoDto().createResponse(
         true,
         EGenericResponse.countFinish,
-        data
+        { total: data }
       );
     } catch (error) {
       return this.errorCatch.exceptionsOptions(error);
@@ -321,7 +321,7 @@ export class NotesService {
       return new ResponseGenericInfoDto().createResponse(
         true,
         EGenericResponse.countFinish,
-        data
+        { total: data }
       );
     } catch (error) {
       return this.errorCatch.exceptionsOptions(error);
@@ -342,13 +342,13 @@ export class NotesService {
         return new ResponseGenericInfoDto().createResponse(
           true,
           EGenericResponse.notGarmentDelivery,
-          0
+          { total: 0 }
         );
 
       return new ResponseGenericInfoDto().createResponse(
         true,
         EGenericResponse.found,
-        Number(data.sum)
+        { total: Number(data.sum) }
       );
     } catch (error) {
       return this.errorCatch.exceptionsOptions(error);
@@ -369,13 +369,13 @@ export class NotesService {
         return new ResponseGenericInfoDto().createResponse(
           true,
           EGenericResponse.notGarmentDelivery,
-          Number(data.sum)
+          { total: Number(data.sum) }
         );
 
       return new ResponseGenericInfoDto().createResponse(
         true,
         EGenericResponse.found,
-        Number(data.sum)
+        { total: Number(data.sum) }
       );
     } catch (error) {
       return this.errorCatch.errorCatch();

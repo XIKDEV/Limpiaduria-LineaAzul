@@ -1,51 +1,58 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsArray, IsIn, IsNotEmpty, IsNumber } from 'class-validator';
 
 import { DetailNote } from '../entities';
 
 export class CreateNoteDto {
   @IsNumber()
   @IsNotEmpty()
-  @ApiProperty()
+  @ApiProperty({
+    example: 1,
+  })
   client: number;
 
   @IsNumber()
   @IsNotEmpty()
-  @ApiProperty()
+  @ApiProperty({
+    example: 12,
+  })
   amount: number;
 
   @IsNumber()
   @IsNotEmpty()
-  @ApiProperty()
+  @ApiProperty({
+    example: 2,
+  })
   total_garments: number;
 
   @IsNumber()
   @IsNotEmpty()
-  @ApiProperty()
+  @ApiProperty({
+    example: 22,
+  })
   client_pay: number;
 
   @IsNumber()
   @IsNotEmpty()
-  @ApiProperty()
+  @ApiProperty({
+    example: 10,
+  })
   change: number;
 
   @IsNumber()
   @IsNotEmpty()
-  @ApiProperty()
+  @ApiProperty({
+    example: 0,
+  })
   missing_pay: number;
 
-  @IsArray({
-    each: true,
-    always: true,
-  })
+  @IsArray({})
   @ApiProperty({
     example: [
       {
-        id: 0,
-        id_g: 0,
-        id_n: 0,
-        quantity: 0,
-        price: 0,
+        id_g: 2,
+        quantity: 1,
+        price: 12,
       },
     ],
   })

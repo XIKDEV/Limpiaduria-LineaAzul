@@ -1,14 +1,8 @@
-import { Controller, Get, Body, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Body, Param, ParseIntPipe } from '@nestjs/common';
 
 import { NotesService } from './notes.service';
 import { CreateNoteDto } from './dto';
-import {
-  DateParamDto,
-  EGenericResponse,
-  ERestApi,
-  IdParamDto,
-  Swagger,
-} from '../common';
+import { EGenericResponse, ERestApi, Swagger } from '../common';
 import { ApiTags } from '@nestjs/swagger';
 
 @Controller('notes')
@@ -33,7 +27,6 @@ export class NotesController {
     return this.notesService.newFolio();
   }
 
-  @Get('NotesList')
   @Swagger({
     restApi: ERestApi.getAll,
     url: 'RegisterNote',
@@ -54,8 +47,8 @@ export class NotesController {
     restApi: ERestApi.getOne,
     url: 'NoteInfo/:id',
   })
-  findOne(@Param('id', ParseIntPipe) id: IdParamDto) {
-    return this.notesService.findOne(id.id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.notesService.findOne(id);
   }
 
   @Swagger({
@@ -63,8 +56,8 @@ export class NotesController {
     url: 'DeliverNote/:id',
     description: EGenericResponse.noteDelivery,
   })
-  deliverNote(@Param('id', ParseIntPipe) id: IdParamDto) {
-    return this.notesService.deliverNote(id.id);
+  deliverNote(@Param('id', ParseIntPipe) id: number) {
+    return this.notesService.deliverNote(id);
   }
 
   @Swagger({
@@ -72,8 +65,8 @@ export class NotesController {
     url: ':id',
     description: EGenericResponse.noteDelivery,
   })
-  remove(@Param('id', ParseIntPipe) id: IdParamDto) {
-    return this.notesService.remove(id.id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.notesService.remove(id);
   }
 
   @Swagger({
@@ -81,8 +74,8 @@ export class NotesController {
     url: 'GarmentsDelivery/:date',
     description: EGenericResponse.countFinish,
   })
-  garmentsDelivery(@Param('date') date: DateParamDto) {
-    return this.notesService.garmentsDelivery(date.date);
+  garmentsDelivery(@Param('date') date?: string) {
+    return this.notesService.garmentsDelivery(date);
   }
 
   @Swagger({
@@ -90,39 +83,39 @@ export class NotesController {
     url: 'GarmentsReceived/:date',
     description: EGenericResponse.countFinish,
   })
-  garmentsReceived(@Param('date') date: DateParamDto) {
-    return this.notesService.garmentsReceived(date.date);
+  garmentsReceived(@Param('date') date?: string) {
+    return this.notesService.garmentsReceived(date);
   }
 
   @Swagger({
     restApi: ERestApi.getAll,
     url: 'GarmentSumDelivery/:date',
   })
-  garmentSumDelivery(@Param('date') date: DateParamDto) {
-    return this.notesService.totalGarmentsDelivery(date.date);
+  garmentSumDelivery(@Param('date') date?: string) {
+    return this.notesService.totalGarmentsDelivery(date);
   }
 
   @Swagger({
     restApi: ERestApi.getAll,
     url: 'GarmentSumReceive/:date',
   })
-  garmentSumReceive(@Param('date') date: DateParamDto) {
-    return this.notesService.totalGarmentsReceived(date.date);
+  garmentSumReceive(@Param('date') date?: string) {
+    return this.notesService.totalGarmentsReceived(date);
   }
 
   @Swagger({
     restApi: ERestApi.getAll,
     url: 'TableGarmentReceive/:date',
   })
-  tableGarmentReceive(@Param('date') date: DateParamDto) {
-    return this.notesService.tableGarmentReceive(date.date);
+  tableGarmentReceive(@Param('date') date?: string) {
+    return this.notesService.tableGarmentReceive(date);
   }
 
   @Swagger({
     restApi: ERestApi.getAll,
     url: 'TableGarmentDelivery/:date',
   })
-  tableGarmentDelivery(@Param('date') date: DateParamDto) {
-    return this.notesService.tableGarmentDelivery(date.date);
+  tableGarmentDelivery(@Param('date') date?: string) {
+    return this.notesService.tableGarmentDelivery(date);
   }
 }

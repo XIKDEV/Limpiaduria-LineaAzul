@@ -30,7 +30,7 @@ export class GarmentsService {
       return new ResponseGenericInfoDto().createResponse(
         true,
         EGenericResponse.create,
-        id
+        { id }
       );
     } catch (error) {
       return this.errorCatch.exceptionsOptions(error);
@@ -40,13 +40,6 @@ export class GarmentsService {
   async findAll() {
     try {
       const data = await this.garmentRepository.find({
-        select: {
-          id: true,
-          code_garment: true,
-          description: true,
-          number_garments: true,
-          price: true,
-        },
         where: {
           status: true,
         },
@@ -92,7 +85,7 @@ export class GarmentsService {
         updatedAt: new Date().toLocaleDateString('en-US'),
       });
 
-      if (!data || !data.status) throw new Error(EExceptionsOptions.notFoundGarment);
+      if (!data) throw new Error(EExceptionsOptions.notFoundGarment);
 
       const { id, code_garment, description, number_garments, price } =
         await this.garmentRepository.save(data);
@@ -119,7 +112,7 @@ export class GarmentsService {
       return new ResponseGenericInfoDto().createResponse(
         true,
         EGenericResponse.delete,
-        id
+        { id }
       );
     } catch (error) {
       return this.errorCatch.exceptionsOptions(error);

@@ -1,16 +1,14 @@
 import {
   Controller,
   Body,
-  Patch,
   Param,
-  Delete,
   ParseFloatPipe,
   ParseIntPipe,
 } from '@nestjs/common';
 
 import { GarmentsService } from './garments.service';
 import { UpdateGarmentDto, CreateGarmentDto } from './dto';
-import { ERestApi, IdParamDto, Swagger } from 'src/common';
+import { ERestApi, Swagger } from 'src/common';
 import { ApiTags } from '@nestjs/swagger';
 
 @Controller('garments')
@@ -38,8 +36,8 @@ export class GarmentsController {
     restApi: ERestApi.getOne,
     url: 'GarmentInfo/:code_garment',
   })
-  findOne(@Param('code_garment', ParseFloatPipe) code_garment: IdParamDto) {
-    return this.garmentsService.findOne(code_garment.id);
+  findOne(@Param('code_garment', ParseFloatPipe) code_garment: number) {
+    return this.garmentsService.findOne(code_garment);
   }
 
   @Swagger({
@@ -47,17 +45,17 @@ export class GarmentsController {
     url: 'UpdateGarment/:id',
   })
   update(
-    @Param('id', ParseIntPipe) id: IdParamDto,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateGarmentDto: UpdateGarmentDto
   ) {
-    return this.garmentsService.update(id.id, updateGarmentDto);
+    return this.garmentsService.update(id, updateGarmentDto);
   }
 
   @Swagger({
     restApi: ERestApi.delete,
     url: 'DeleteGarment/:id',
   })
-  remove(@Param('id') id: IdParamDto) {
-    return this.garmentsService.remove(id.id);
+  remove(@Param('id') id: number) {
+    return this.garmentsService.remove(id);
   }
 }
