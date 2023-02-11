@@ -65,7 +65,7 @@ $ yarn run start:dev
 
 `Dockerfile` is the config to create and deploy on docker hub an image with the api
 
-You can run the next command, we use buildx to build with different OS/ARCH:
+You can run the next command; we use buildx to build with different OS/ARCH:
 
 1. Create an profile with buildx
 
