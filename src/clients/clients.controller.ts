@@ -10,46 +10,55 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
-import { ERestApi } from '../common/interfaces';
-import { Swagger } from '../common';
+import { Swagger, IdParamDto, ERestApi } from '../common';
 import { ClientsService } from './clients.service';
-import { CreateClientDto } from './dto/create-client.dto';
-import { UpdateClientDto } from './dto/update-client.dto';
+import { UpdateClientDto, CreateClientDto } from './dto';
 
 @Controller('clients')
 @ApiTags('Client')
 export class ClientsController {
   constructor(private readonly clientsService: ClientsService) {}
 
-  @Post('CreateClient')
+  @Swagger({
+    restApi: ERestApi.post,
+    url: 'CreateClient',
+  })
   create(@Body() createClientDto: CreateClientDto) {
     return this.clientsService.create(createClientDto);
   }
 
   @Swagger({
-    restApi: ERestApi.get,
+    restApi: ERestApi.getAll,
     url: 'ClientsList',
-    modules: 'Client',
   })
   findAll() {
     return this.clientsService.findAll();
   }
 
-  @Get('ClientInfo/:id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.clientsService.findOne(id);
+  @Swagger({
+    restApi: ERestApi.getOne,
+    url: 'ClientInfo/:id',
+  })
+  findOne(@Param('id', ParseIntPipe) id: IdParamDto) {
+    return this.clientsService.findOne(id.id);
   }
 
-  @Patch('UpdateClient/:id')
+  @Swagger({
+    restApi: ERestApi.patch,
+    url: 'UpdateClient/:id',
+  })
   update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', ParseIntPipe) id: IdParamDto,
     @Body() updateClientDto: UpdateClientDto
   ) {
-    return this.clientsService.update(id, updateClientDto);
+    return this.clientsService.update(id.id, updateClientDto);
   }
 
-  @Delete('DeleteClient/:id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.clientsService.remove(id);
+  @Swagger({
+    restApi: ERestApi.delete,
+    url: 'DeleteClient/:id',
+  })
+  remove(@Param('id', ParseIntPipe) id: IdParamDto) {
+    return this.clientsService.remove(id.id);
   }
 }

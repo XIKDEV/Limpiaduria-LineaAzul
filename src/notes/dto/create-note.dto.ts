@@ -1,33 +1,53 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsNotEmpty, IsNumber } from 'class-validator';
-import { Client } from '../../clients/entities/client.entity';
-import { DetailNote } from '../../detail_notes/entities/detail_notes.entity';
-import { DetailNoteDto } from './create_detail_note.dto';
+
+import { DetailNote } from '../entities';
 
 export class CreateNoteDto {
   @IsNumber()
   @IsNotEmpty()
-  client: Client;
+  @ApiProperty()
+  client: number;
 
   @IsNumber()
   @IsNotEmpty()
+  @ApiProperty()
   amount: number;
 
   @IsNumber()
   @IsNotEmpty()
+  @ApiProperty()
   total_garments: number;
 
   @IsNumber()
   @IsNotEmpty()
+  @ApiProperty()
   client_pay: number;
 
   @IsNumber()
   @IsNotEmpty()
+  @ApiProperty()
   change: number;
 
   @IsNumber()
   @IsNotEmpty()
+  @ApiProperty()
   missing_pay: number;
 
-  @IsArray()
-  details: DetailNoteDto[];
+  @IsArray({
+    each: true,
+    always: true,
+  })
+  @ApiProperty({
+    example: [
+      {
+        id: 0,
+        id_g: 0,
+        id_n: 0,
+        quantity: 0,
+        price: 0,
+      },
+    ],
+  })
+  details: DetailNote[];
 }

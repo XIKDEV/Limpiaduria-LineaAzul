@@ -1,6 +1,7 @@
 export enum ERestApi {
   post = 'post',
-  get = 'get',
-  put = 'put',
+  getAll = 'getAll',
+  patch = 'patch',
   delete = 'delete',
+  getOne = 'getOne',
 }

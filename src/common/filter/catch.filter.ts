@@ -13,7 +13,6 @@ export class CatchFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
-    console.log(status);
     return response.status(status).json({
       success: false,
       message: exception.getResponse()['message'],

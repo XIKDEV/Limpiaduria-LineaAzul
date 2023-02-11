@@ -1,20 +1,17 @@
-import {
-  ConflictException,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
 
-import { ResponseGenericDto } from '../common/response/reponse-generic.dto';
-import { CreateClientDto } from './dto/create-client.dto';
-import { UpdateClientDto } from './dto/update-client.dto';
-import { Client } from './entities/client.entity';
-import { ClientListDto } from './dto/client-list.dto';
-import { ResponseGenericInfoDto } from '../common/response/response-generic-info.dto';
-import { ErrorCatchService } from '../common/error-catch/error-catch.service';
-import { response } from 'express';
+import { CreateClientDto, UpdateClientDto, ClientListDto } from './dto';
+import { Client } from './entities';
+import {
+  EExceptionsOptions,
+  EGenericResponse,
+  ResponseGenericInfoDto,
+  ErrorCatchService,
+  ResponseGenericDto,
+} from '../common';
 
 @Injectable()
 export class ClientsService {
@@ -32,83 +29,95 @@ export class ClientsService {
 
       return new ResponseGenericInfoDto().createResponse(
         true,
-        'Client was created',
+        EGenericResponse.create,
         { id }
       );
     } catch (error) {
-      this.errorCatch.errorCatch();
+      return this.errorCatch.exceptionsOptions(error);
     }
   }
 
   async findAll() {
-    const data = await this.clientRepository.find({
-      where: { status: true },
-      select: { id: true, name: true, email: true, cellphone: true },
-      order: {
-        id: 'ASC',
-      },
-      relations: {
-        notes: true,
-      },
-    });
+    try {
+      const data = await this.clientRepository.find({
+        where: { status: true },
+        select: { id: true, name: true, email: true, cellphone: true },
+        order: {
+          id: 'ASC',
+        },
+        relations: {
+          notes: true,
+        },
+      });
 
-    return new ResponseGenericDto<ClientListDto>(ClientListDto).createResponse(
-      true,
-      'Information found',
-      data.map((client) => ({
-        ...client,
-        notes: client.notes.map((note) => {
-          const { client, ...noteRest } = note;
-          return { ...noteRest };
-        }),
-      }))
-    );
+      return new ResponseGenericDto<ClientListDto>(ClientListDto).createResponse(
+        true,
+        EGenericResponse.found,
+        data.map((client) => ({
+          ...client,
+          notes: client.notes.map((note) => {
+            const { client, ...noteRest } = note;
+            return { ...noteRest };
+          }),
+        }))
+      );
+    } catch (error) {
+      return this.errorCatch.exceptionsOptions(error);
+    }
   }
 
   async findAllQB() {
-    const data = await this.clientRepository
-      .createQueryBuilder('client')
-      .where('client.status =:status', {
-        status: true,
-      })
-      .leftJoinAndSelect('client.notes', 'notes')
-      .leftJoinAndSelect('notes.details', 'detail_note')
-      .leftJoinAndSelect('detail_note.id_g', 'garment')
-      .getMany();
+    try {
+      const data = await this.clientRepository
+        .createQueryBuilder('client')
+        .where('client.status =:status', {
+          status: true,
+        })
+        .leftJoinAndSelect('client.notes', 'notes')
+        .leftJoinAndSelect('notes.details', 'detail_note')
+        .leftJoinAndSelect('detail_note.id_g', 'garment')
+        .getMany();
 
-    return data;
+      return data;
+    } catch (error) {
+      return this.errorCatch.exceptionsOptions(error);
+    }
   }
 
   async findOne(id: number) {
-    const { notes, ...data } = await this.clientRepository.findOne({
-      where: {
-        id,
-        status: true,
-      },
-      relations: {
-        notes: true,
-      },
-    });
+    try {
+      const data = await this.clientRepository.findOne({
+        where: {
+          id,
+          status: true,
+        },
+        relations: {
+          notes: true,
+        },
+      });
 
-    const clientInfo = {
-      ...data,
-      notes: notes.map((note) => {
-        const { client, ...noteRest } = note;
-        return {
-          ...noteRest,
-        };
-      }),
-    };
+      if (!data) {
+        throw new Error(EExceptionsOptions.notFoundClient);
+      }
 
-    if (!data || data == null) {
-      return this.errorCatch.notExitsCatch(id);
+      const { notes, ...restData } = data;
+
+      const clientInfo = {
+        ...restData,
+        notes: notes.map(({ client, ...noteRest }) => {
+          return {
+            ...noteRest,
+          };
+        }),
+      };
+      return new ResponseGenericInfoDto<ClientListDto>(ClientListDto).createResponse(
+        true,
+        EGenericResponse.found,
+        clientInfo
+      );
+    } catch (error) {
+      return this.errorCatch.exceptionsOptions(error);
     }
-
-    return new ResponseGenericInfoDto<ClientListDto>(ClientListDto).createResponse(
-      true,
-      'Information found',
-      clientInfo
-    );
   }
 
   async update(idClient: number, updateClientDto: UpdateClientDto) {
@@ -119,18 +128,17 @@ export class ClientsService {
         updatedAt: new Date().toLocaleDateString('en-US'),
       });
 
-      if (!data) throw new Error('testing');
+      if (!data) throw new Error(EExceptionsOptions.notFoundClient);
 
       const { id, name, email, cellphone } = await this.clientRepository.save(data);
 
       return new ResponseGenericInfoDto().createResponse(
         true,
-        'Client was updated',
+        EGenericResponse.update,
         { id, name, email, cellphone }
       );
     } catch (error) {
-      if (error.message === 'testing')
-        return this.errorCatch.notExitsCatch(idClient, 'Client');
+      return this.errorCatch.exceptionsOptions(error);
     }
   }
 
@@ -141,11 +149,11 @@ export class ClientsService {
         { status: false, updatedAt: new Date().toLocaleDateString('en-US') }
       );
 
-      if (!data) return this.errorCatch.notExitsCatch(idClient);
+      if (!data) throw new Error(EExceptionsOptions.notFoundClient);
 
       return new ResponseGenericInfoDto().createResponse(
         true,
-        'Client was deleted',
+        EGenericResponse.delete,
         { idClient }
       );
     } catch (error) {

@@ -1,26 +1,32 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
-import { DetailNote } from '../../detail_notes/entities/detail_notes.entity';
+import { DetailNote } from '../../notes/entities/detail_notes.entity';
 
 @Entity()
 export class Garment {
   @PrimaryGeneratedColumn('identity')
+  @ApiProperty()
   id: number;
 
   @Column('decimal', {
     unique: true,
   })
+  @ApiProperty()
   code_garment: number;
 
   @Column('text')
+  @ApiProperty()
   description: string;
 
   @Column('int')
+  @ApiProperty()
   number_garments: number;
 
   @Column('decimal', {
     default: 0,
   })
+  @ApiProperty()
   price: number;
 
   @Column('boolean', {
