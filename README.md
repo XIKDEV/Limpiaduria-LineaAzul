@@ -42,15 +42,16 @@ docker compose up -d
 
 3. Create environment file `.env`
 
-| Variable    | Value     | Description                                                 |
-| ----------- | --------- | ----------------------------------------------------------- |
-| PORT        | 3000      | Port that the server listens on                             |
-| HOST_BD     | localhost | Host to connect database                                    |
-| PORT_BD     | 5432      | Port to connect database                                    |
-| USER_BD     | postgres  | User to connect database                                    |
-| PASSWORD_BD |           | Password to connect database, developer select the password |
-| BD_NAME     | NameDB    | Database name to connect database                           |
-| STAGE       | dev       | Stage you want to run the app                               |
+| Variable     | Value                                     | Description                                                 |
+| ------------ | ----------------------------------------- | ----------------------------------------------------------- |
+| PORT         | 3000                                      | Port that the server listens on                             |
+| HOST_BD      | localhost                                 | Host to connect database                                    |
+| PORT_BD      | 5432                                      | Port to connect database                                    |
+| USER_BD      | postgres                                  | User to connect database                                    |
+| PASSWORD_BD  |                                           | Password to connect database, developer select the password |
+| BD_NAME      | NameDB                                    | Database name to connect database                           |
+| STAGE        | dev                                       | Stage you want to run the app                               |
+| IMAGE_DOCKER | alderickrios/limpiaduria_linea_azul:2.0.1 | Image to run the api with docker                            |
 
 ## Running the app
 
