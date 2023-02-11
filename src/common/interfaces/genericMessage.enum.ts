@@ -11,4 +11,5 @@ export enum EGenericResponse {
   noteCancel = 'Note was cancel',
   countFinish = 'Count finished',
   notGarmentDelivery = 'Not Garment delivery this day',
+  errorMessage = 'Error message',
 }

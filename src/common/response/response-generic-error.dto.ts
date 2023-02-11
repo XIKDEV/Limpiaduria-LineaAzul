@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Type } from 'class-transformer';
+import { EGenericResponse } from '../interfaces';
 
 export class ResponseGenericErrorDto<T> {
   @Exclude()
@@ -19,7 +20,7 @@ export class ResponseGenericErrorDto<T> {
   data: T[];
 
   @ApiProperty({
-    example: 'Error message',
+    example: EGenericResponse.errorMessage,
   })
   message: string;
 

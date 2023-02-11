@@ -13,15 +13,6 @@ import { ResponseGenericDto } from '../response/reponse-generic.dto';
 
 @Injectable()
 export class ErrorCatchService {
-  errorCatch() {
-    throw new InternalServerErrorException(
-      new ResponseGenericDto().createResponse(
-        false,
-        'Unexpected error, check the server'
-      )
-    );
-  }
-
   notExitsCatch(module?: string): HttpException {
     throw new ConflictException(`${module} was not found`);
   }

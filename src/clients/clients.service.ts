@@ -157,7 +157,7 @@ export class ClientsService {
         { idClient }
       );
     } catch (error) {
-      return this.errorCatch.errorCatch();
+      return this.errorCatch.exceptionsOptions(error);
     }
   }
 }

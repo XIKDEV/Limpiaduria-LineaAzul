@@ -378,7 +378,7 @@ export class NotesService {
         { total: Number(data.sum) }
       );
     } catch (error) {
-      return this.errorCatch.errorCatch();
+      return this.errorCatch.exceptionsOptions(error);
     }
   }
 
