@@ -5,7 +5,7 @@ services:
     image: postgres:14.3
     restart: always
     ports:
-      - "5432:5432"
+      - '5432:5432'
     environment:
       POSTGRES_PASSWORD: ${PASSWORD_BD}
       POSTGRES_DB: ${BD_NAME}
@@ -16,7 +16,7 @@ services:
   #     depends_on:
   #       - db
   #     container_name: lla
-  #     image: alderickrios/limpiaduria_linea_azul:2.0.1
+  #     image: ${IMAGE_DOCKER}
   #     ports:
   #       - ${PORT}:${PORT}
   #     environment:
@@ -38,4 +38,3 @@ services:
   #   restart: always
   #   ports:
   #     - "80:80"
-    
