@@ -387,7 +387,7 @@ export class NotesService {
     try {
       const data = await this.noteRepository
         .createQueryBuilder('note')
-        .select('SUM(detail_note.quantity) as quantityGarments')
+        .select('SUM(detail_note.quantity_by_garments) as quantityGarments')
         .innerJoin('note.details', 'detail_note')
         .innerJoin('detail_note.id_g', 'garment')
         .addSelect('detail_note.id_g')
@@ -418,7 +418,7 @@ export class NotesService {
     try {
       const data = await this.noteRepository
         .createQueryBuilder('note')
-        .select('SUM(detail_note.quantity) as quantityGarments')
+        .select('SUM(detail_note.quantity_by_garments) as quantityGarments')
         .innerJoin('note.details', 'detail_note')
         .innerJoin('detail_note.id_g', 'garment')
         .addSelect('detail_note.id_g')
