@@ -43,6 +43,7 @@ export class NotesService {
 
       const data = this.noteRepository.create({
         ...createDetail,
+        client: idClient,
         details: details.map(
           ({ id_g, price, quantity_receive, quantity_by_garments }) =>
             this.detailNoteRepository.create({
@@ -101,19 +102,20 @@ export class NotesService {
       const data = await this.noteRepository.find({
         relations: {
           details: true,
+          client: true,
         },
         where: {
           status: false,
           cancel: false,
         },
       });
+      console.log(data);
       return new ResponseGenericDto().createResponse(
         true,
         EGenericResponse.found,
         data.map((note) => {
           const { client, amount, missing_pay, id, createdAt: created } = note;
-          const { status, createdAt, updatedAt, email, cellphone, ...clientInfo } =
-            client;
+          const { email, cellphone, ...clientInfo } = client;
 
           return {
             id,
@@ -151,6 +153,7 @@ export class NotesService {
       const data = await this.noteRepository.find({
         relations: {
           details: true,
+          client: true,
         },
         where: {
           cancel: false,
@@ -168,8 +171,7 @@ export class NotesService {
             status: statusNote,
             createdAt: created,
           } = note;
-          const { status, createdAt, updatedAt, email, cellphone, ...clientInfo } =
-            client;
+          const { email, cellphone, ...clientInfo } = client;
 
           return {
             id,
