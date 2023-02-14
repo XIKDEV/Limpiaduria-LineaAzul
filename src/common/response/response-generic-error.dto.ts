@@ -1,20 +1,27 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Type } from 'class-transformer';
+import { EGenericResponse } from '../interfaces';
 
-export class ResponseGenericInfoDto<T> {
+export class ResponseGenericErrorDto<T> {
   @Exclude()
   type: Function;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: false,
+  })
   success: boolean;
 
-  @ApiProperty()
-  @Type((data) => {
-    return data.newObject(new ResponseGenericInfoDto()).type;
+  @ApiProperty({
+    example: [],
   })
-  data: T;
+  @Type((data) => {
+    return data.newObject(new ResponseGenericErrorDto()).type;
+  })
+  data: T[];
 
-  @ApiProperty()
+  @ApiProperty({
+    example: EGenericResponse.errorMessage,
+  })
   message: string;
 
   constructor(type?: Function) {
@@ -24,9 +31,9 @@ export class ResponseGenericInfoDto<T> {
   createResponse(
     Success: boolean,
     Message: string,
-    Data: T
-  ): ResponseGenericInfoDto<T> {
-    const resp = new ResponseGenericInfoDto<T>();
+    Data: T[] = []
+  ): ResponseGenericErrorDto<T> {
+    const resp = new ResponseGenericErrorDto<T>();
 
     resp.success = Success;
     resp.data = Data;

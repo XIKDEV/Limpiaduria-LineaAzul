@@ -3,12 +3,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
 
-import { ResponseGenericInfoDto } from '../common/response/response-generic-info.dto';
-import { ErrorCatchService } from '../common/error-catch/error-catch.service';
-import { ResponseGenericDto } from '../common/response/reponse-generic.dto';
-import { DetailNote } from '../detail_notes/entities/detail_notes.entity';
-import { CreateNoteDto } from './dto/create-note.dto';
-import { Note } from './entities/note.entity';
+import { Client } from '../clients/entities';
+import {
+  ResponseGenericInfoDto,
+  ErrorCatchService,
+  ResponseGenericDto,
+  EGenericResponse,
+  EExceptionsOptions,
+} from '../common';
+import { CreateNoteDto } from './dto';
+import { Note, DetailNote } from './entities';
 
 @Injectable()
 export class NotesService {
@@ -17,15 +21,29 @@ export class NotesService {
     private readonly noteRepository: Repository<Note>,
     @InjectRepository(DetailNote)
     private readonly detailNoteRepository: Repository<DetailNote>,
+    @InjectRepository(Client)
+    private readonly clientRepository: Repository<Client>,
     private readonly errorCatch: ErrorCatchService
   ) {}
 
   async create(createNoteDto: CreateNoteDto) {
     try {
-      const { details = [], ...createDetail } = createNoteDto;
+      const { details = [], client, ...createDetail } = createNoteDto;
+
+      const idClient = await this.clientRepository.findOne({
+        where: {
+          id: client,
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      if (!idClient) throw new Error(EExceptionsOptions.notFoundClient);
 
       const data = this.noteRepository.create({
         ...createDetail,
+        client: idClient,
         details: details.map(({ id_g, price, quantity }) =>
           this.detailNoteRepository.create({
             id_g: id_g,
@@ -39,12 +57,11 @@ export class NotesService {
 
       return new ResponseGenericInfoDto().createResponse(
         true,
-        'Note was created',
-        id
+        EGenericResponse.create,
+        { id }
       );
     } catch (error) {
-      console.log(error);
-      return this.errorCatch.errorCatch();
+      return this.errorCatch.exceptionsOptions(error);
     }
   }
 
@@ -52,160 +69,174 @@ export class NotesService {
     try {
       const data = await this.noteRepository.find({
         order: {
-          id: 'ASC'
+          id: 'ASC',
         },
         select: { id: true },
       });
       if (!data.length) {
-        return new ResponseGenericInfoDto().createResponse(true, 'New Folio', { id: 1 });
+        return new ResponseGenericInfoDto().createResponse(
+          true,
+          EGenericResponse.newFolio,
+          {
+            id: 1,
+          }
+        );
       }
       const newFolio = data.pop().id + 1;
-      return new ResponseGenericInfoDto().createResponse(true, 'New Folio', { id: newFolio });
+      return new ResponseGenericInfoDto().createResponse(
+        true,
+        EGenericResponse.newFolio,
+        {
+          id: newFolio,
+        }
+      );
     } catch (error) {
-      return this.errorCatch.errorCatch();
+      return this.errorCatch.exceptionsOptions(error);
     }
   }
 
   async findAll() {
-    const data = await this.noteRepository.find({
-      relations: {
-        details: true,
-      },
-      where: {
-        status: false,
-        cancel: false,
-      },
-    });
-    return new ResponseGenericDto().createResponse(
-      true,
-      'Information found',
-      data.map((note) => {
-        const {
-          client,
-          amount,
-          missing_pay,
-          id,
-          createdAt: created,
-          ...noteInfo
-        } = note;
-        const { status, createdAt, updatedAt, email, cellphone, ...clientInfo } =
-          client;
+    try {
+      const data = await this.noteRepository.find({
+        relations: {
+          details: true,
+        },
+        where: {
+          status: false,
+          cancel: false,
+        },
+      });
+      return new ResponseGenericDto().createResponse(
+        true,
+        EGenericResponse.found,
+        data.map((note) => {
+          const { client, amount, missing_pay, id, createdAt: created } = note;
+          const { status, createdAt, updatedAt, email, cellphone, ...clientInfo } =
+            client;
 
-        return {
-          id,
-          created,
-          amount,
-          missing_pay,
-          client: clientInfo,
-          details: note.details.map((detail) => {
-            const { id_n, id_g, price: priceInDetail, ...detailRest } = detail;
-            const {
-              createdAt,
-              updatedAt,
-              price,
-              status,
-              id,
-              code_garment,
-              ...garmentInfo
-            } = id_g;
+          return {
+            id,
+            created,
+            amount,
+            missing_pay,
+            client: clientInfo,
+            details: note.details.map((detail) => {
+              const { id_n, id_g, price: priceInDetail, ...detailRest } = detail;
+              const {
+                createdAt,
+                updatedAt,
+                price,
+                status,
+                id,
+                code_garment,
+                ...garmentInfo
+              } = id_g;
 
-            return {
-              ...detailRest,
-              garment: garmentInfo,
-            };
-          }),
-        };
-      })
-    );
+              return {
+                ...detailRest,
+                garment: garmentInfo,
+              };
+            }),
+          };
+        })
+      );
+    } catch (error) {
+      return this.errorCatch.exceptionsOptions(error);
+    }
   }
 
   async findAllSearchService() {
-    const data = await this.noteRepository.find({
-      relations: {
-        details: true,
-      },
-      where: {
-        cancel: false
-      },
-    });
-    return new ResponseGenericDto().createResponse(
-      true,
-      'Information found',
-      data.map((note) => {
-        const {
-          client,
-          amount,
-          missing_pay,
-          id,
-          status: statusNote,
-          createdAt: created,
-          ...noteInfo
-        } = note;
-        const { status, createdAt, updatedAt, email, cellphone, ...clientInfo } =
-          client;
+    try {
+      const data = await this.noteRepository.find({
+        relations: {
+          details: true,
+        },
+        where: {
+          cancel: false,
+        },
+      });
+      return new ResponseGenericDto().createResponse(
+        true,
+        EGenericResponse.found,
+        data.map((note) => {
+          const {
+            client,
+            amount,
+            missing_pay,
+            id,
+            status: statusNote,
+            createdAt: created,
+          } = note;
+          const { status, createdAt, updatedAt, email, cellphone, ...clientInfo } =
+            client;
 
-        return {
-          id,
-          created,
-          statusNote,
-          amount,
-          missing_pay,
-          client: clientInfo,
-          details: note.details.map((detail) => {
-            const { id_n, id_g, price: priceInDetail, ...detailRest } = detail;
-            const {
-              createdAt,
-              updatedAt,
-              price,
-              status,
-              id,
-              code_garment,
-              ...garmentInfo
-            } = id_g;
+          return {
+            id,
+            created,
+            statusNote,
+            amount,
+            missing_pay,
+            client: clientInfo,
+            details: note.details.map((detail) => {
+              const { id_n, id_g, price: priceInDetail, ...detailRest } = detail;
+              const {
+                createdAt,
+                updatedAt,
+                price,
+                status,
+                id,
+                code_garment,
+                ...garmentInfo
+              } = id_g;
 
-            return {
-              ...detailRest,
-              garment: garmentInfo,
-            };
-          }),
-        };
-      })
-    );
+              return {
+                ...detailRest,
+                garment: garmentInfo,
+              };
+            }),
+          };
+        })
+      );
+    } catch (error) {
+      return this.errorCatch.exceptionsOptions(error);
+    }
   }
 
   async findOne(id: number) {
-    const { client, ...data } = await this.noteRepository.findOne({
-      where: { id, cancel: false },
-      relations: {
-        details: true,
-      },
-    });
+    try {
+      const { client, ...data } = await this.noteRepository.findOne({
+        where: { id, cancel: false },
+        relations: {
+          details: true,
+        },
+      });
 
-    if (!data) {
-      return this.errorCatch.notExitsCatch(id);
+      if (!data) throw new Error(EExceptionsOptions.notFoundNote);
+
+      const { status, createdAt, updatedAt, ...clientInfo } = client;
+
+      const noteFind = {
+        ...data,
+        client: clientInfo,
+        details: data.details.map((detail) => {
+          const { id_n, id_g, ...detailRest } = detail;
+          const { createdAt, updatedAt, price, status, ...garmentInfo } = id_g;
+
+          return {
+            ...detailRest,
+            garment: garmentInfo,
+          };
+        }),
+      };
+
+      return new ResponseGenericInfoDto().createResponse(
+        true,
+        EGenericResponse.found,
+        noteFind
+      );
+    } catch (error) {
+      return this.errorCatch.exceptionsOptions(error);
     }
-
-    const { status, createdAt, updatedAt, ...clientInfo } = client;
-
-    const noteFind = {
-      ...data,
-      client: clientInfo,
-      details: data.details.map((detail) => {
-        const { id_n, id_g, ...detailRest } = detail;
-        const { createdAt, updatedAt, price, status, ...garmentInfo } = id_g;
-
-        return {
-          ...detailRest,
-          garment: garmentInfo,
-        };
-      }),
-    };
-
-    return new ResponseGenericInfoDto().createResponse(
-      true,
-      'Information found',
-      noteFind
-    );
   }
 
   async deliverNote(id: number) {
@@ -216,15 +247,15 @@ export class NotesService {
         updatedAt: new Date().toLocaleDateString('en-US'),
       });
 
-      if (!data) return this.errorCatch.notExitsCatch(id);
+      if (!data) throw new Error(EExceptionsOptions.notFoundNote);
 
       return new ResponseGenericInfoDto().createResponse(
         true,
-        'Note was delivered',
-        id
+        EGenericResponse.noteDelivery,
+        { id }
       );
     } catch (error) {
-      return this.errorCatch.errorCatch();
+      return this.errorCatch.exceptionsOptions(error);
     }
   }
 
@@ -236,47 +267,65 @@ export class NotesService {
         updatedAt: new Date().toLocaleDateString('en-US'),
       });
 
-      await this.detailNoteRepository.update({
-        id_n: id,
-      }, {
-        active: false,
-        updatedAt: new Date().toLocaleDateString('en-US'),
-      })
+      if (!data) throw new Error(EExceptionsOptions.notFoundNote);
 
-      if (!data) return this.errorCatch.notExitsCatch(id);
-      
+      await this.detailNoteRepository.update(
+        {
+          id_n: id,
+        },
+        {
+          active: false,
+          updatedAt: new Date().toLocaleDateString('en-US'),
+        }
+      );
+
       await this.noteRepository.save(data);
 
       return new ResponseGenericInfoDto().createResponse(
         true,
-        'Note was canceled',
-        id
+        EGenericResponse.noteCancel,
+        { id }
       );
     } catch (error) {
-      console.log(error)
-      return this.errorCatch.errorCatch();
+      return this.errorCatch.exceptionsOptions(error);
     }
   }
 
   async garmentsDelivery(date: string) {
-    const data = await this.noteRepository.count({
-      where: {
-        status: true,
-        updatedAt: date,
-      },
-    });
+    try {
+      const data = await this.noteRepository.count({
+        where: {
+          status: true,
+          updatedAt: date,
+        },
+      });
 
-    return new ResponseGenericInfoDto().createResponse(true, 'Count finish', data);
+      return new ResponseGenericInfoDto().createResponse(
+        true,
+        EGenericResponse.countFinish,
+        { total: data }
+      );
+    } catch (error) {
+      return this.errorCatch.exceptionsOptions(error);
+    }
   }
 
   async garmentsReceived(date: string) {
-    const data = await this.noteRepository.count({
-      where: {
-        createdAt: date,
-      },
-    });
+    try {
+      const data = await this.noteRepository.count({
+        where: {
+          createdAt: date,
+        },
+      });
 
-    return new ResponseGenericInfoDto().createResponse(true, 'Count finish', data);
+      return new ResponseGenericInfoDto().createResponse(
+        true,
+        EGenericResponse.countFinish,
+        { total: data }
+      );
+    } catch (error) {
+      return this.errorCatch.exceptionsOptions(error);
+    }
   }
 
   async totalGarmentsDelivery(date: string) {
@@ -289,20 +338,20 @@ export class NotesService {
           status: true,
         })
         .getRawOne();
-      if (data.sum === null)
+      if (!data.sum)
         return new ResponseGenericInfoDto().createResponse(
-          false,
-          'Not Garment delivery this day',
-          0
+          true,
+          EGenericResponse.notGarmentDelivery,
+          { total: 0 }
         );
 
       return new ResponseGenericInfoDto().createResponse(
         true,
-        'Info found',
-        Number(data.sum)
+        EGenericResponse.found,
+        { total: Number(data.sum) }
       );
     } catch (error) {
-      return this.errorCatch.errorCatch();
+      return this.errorCatch.exceptionsOptions(error);
     }
   }
 
@@ -316,20 +365,20 @@ export class NotesService {
         })
         .getRawOne();
 
-      if (data.sum === null)
+      if (!data.sum)
         return new ResponseGenericInfoDto().createResponse(
-          false,
-          'Not Garment delivery this day',
-          Number(data.sum)
+          true,
+          EGenericResponse.notGarmentDelivery,
+          { total: Number(data.sum) }
         );
 
       return new ResponseGenericInfoDto().createResponse(
         true,
-        'Info found',
-        Number(data.sum)
+        EGenericResponse.found,
+        { total: Number(data.sum) }
       );
     } catch (error) {
-      return this.errorCatch.errorCatch();
+      return this.errorCatch.exceptionsOptions(error);
     }
   }
 
@@ -354,10 +403,13 @@ export class NotesService {
           id: idGId,
         })
       );
-      return new ResponseGenericDto().createResponse(true, 'count finish', newData);
+      return new ResponseGenericDto().createResponse(
+        true,
+        EGenericResponse.found,
+        newData
+      );
     } catch (error) {
-      console.log(error);
-      return this.errorCatch.errorCatch();
+      return this.errorCatch.exceptionsOptions(error);
     }
   }
 
@@ -377,12 +429,6 @@ export class NotesService {
         })
         .getRawMany();
 
-      if (data.length == 0)
-        return new ResponseGenericDto().createResponse(
-          false,
-          'Not Garment Delivery'
-        );
-
       const newData = data.map(
         ({ garment_description, quantitygarments, idGId }) => ({
           garmentDescription: garment_description,
@@ -390,10 +436,13 @@ export class NotesService {
           id: idGId,
         })
       );
-      return new ResponseGenericDto().createResponse(true, 'count finish', newData);
+      return new ResponseGenericDto().createResponse(
+        true,
+        EGenericResponse.found,
+        newData
+      );
     } catch (error) {
-      console.log(error);
-      return this.errorCatch.errorCatch();
+      return this.errorCatch.exceptionsOptions(error);
     }
   }
 }
