@@ -43,13 +43,14 @@ export class NotesService {
 
       const data = this.noteRepository.create({
         ...createDetail,
-        client: idClient,
-        details: details.map(({ id_g, price, quantity }) =>
-          this.detailNoteRepository.create({
-            id_g: id_g,
-            quantity: quantity,
-            price: price,
-          })
+        details: details.map(
+          ({ id_g, price, quantity_receive, quantity_by_garments }) =>
+            this.detailNoteRepository.create({
+              id_g: id_g,
+              quantity_receive,
+              quantity_by_garments,
+              price: price,
+            })
         ),
       });
 

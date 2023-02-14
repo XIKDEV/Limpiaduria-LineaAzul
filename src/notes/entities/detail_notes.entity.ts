@@ -25,9 +25,10 @@ export class DetailNote {
   id_n: Note;
 
   @Column('int')
-  @ApiProperty()
-  @IsNotEmpty()
-  quantity: number;
+  quantity_receive: number;
+
+  @Column('int')
+  quantity_by_garments: number;
 
   @Column('decimal')
   @ApiProperty()
