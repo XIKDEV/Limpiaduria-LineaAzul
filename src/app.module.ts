@@ -1,18 +1,19 @@
 import { Module } from '@nestjs/common';
-import { APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { ErrorInterceptor } from './common/interceptors/error.interceptor';
 import { joiSchema } from './config/joi.validation';
 import { ClientsModule } from './clients/clients.module';
 import { GarmentsModule } from './garments/garments.module';
 import { NotesModule } from './notes/notes.module';
+import { CatchFilter } from './common/filter/catch.filter';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       validationSchema: joiSchema,
+      envFilePath: ['.env', '.env.prod'],
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -30,8 +31,8 @@ import { NotesModule } from './notes/notes.module';
   ],
   providers: [
     {
-      provide: APP_INTERCEPTOR,
-      useClass: ErrorInterceptor,
+      provide: APP_FILTER,
+      useClass: CatchFilter,
     },
   ],
 })

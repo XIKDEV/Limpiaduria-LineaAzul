@@ -5,3 +5,5 @@ node_modules/
 docker-compose.prod.yml
 dist
 pnpm-lock.yaml
+.env
+.env.prod
