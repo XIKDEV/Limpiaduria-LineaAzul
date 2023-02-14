@@ -51,7 +51,8 @@ export class CreateNoteDto {
     example: [
       {
         id_g: 2,
-        quantity: 1,
+        quantity_receive: 1,
+        quantity_by_garments: 1,
         price: 12,
       },
     ],
