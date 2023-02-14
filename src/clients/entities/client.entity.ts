@@ -1,17 +1,12 @@
-import { Note } from '../../notes/entities/note.entity';
-import {
-  Check,
-  Column,
-  Entity,
-  Index,
-  OneToMany,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
+
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Note } from '../../notes/entities';
 
 @Entity('clients')
 export class Client {
   @PrimaryGeneratedColumn('identity')
+  @ApiProperty()
   id: number;
 
   @Column('text', {

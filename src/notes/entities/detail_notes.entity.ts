@@ -1,26 +1,27 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
-import { Note } from '../../notes/entities/note.entity';
+import { Note } from './note.entity';
 import { Garment } from '../../garments/entities/garment.entity';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty } from 'class-validator';
 
 @Entity({ name: 'detail_notes' })
 export class DetailNote {
   @PrimaryGeneratedColumn('identity')
+  @ApiProperty()
+  @IsNotEmpty()
   id: number;
 
   @ManyToOne(() => Garment, (garment) => garment.detailNote, {
     eager: true,
   })
+  @ApiProperty()
+  @IsNotEmpty()
   id_g: Garment;
 
   @ManyToOne(() => Note, (note) => note.details, { onDelete: 'CASCADE' })
+  @ApiProperty()
+  @IsNotEmpty()
   id_n: Note;
 
   @Column('int')
@@ -30,6 +31,8 @@ export class DetailNote {
   quantity_by_garments: number;
 
   @Column('decimal')
+  @ApiProperty()
+  @IsNotEmpty()
   price: number;
 
   @Column('boolean', {

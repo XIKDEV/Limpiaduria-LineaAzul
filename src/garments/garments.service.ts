@@ -3,12 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
 
-import { ResponseGenericInfoDto } from '../common/response/response-generic-info.dto';
-import { ResponseGenericDto } from '../common/response/reponse-generic.dto';
-import { ErrorCatchService } from '../common/error-catch/error-catch.service';
-import { CreateGarmentDto } from './dto/create-garment.dto';
-import { UpdateGarmentDto } from './dto/update-garment.dto';
-import { Garment } from './entities/garment.entity';
+import { CreateGarmentDto, UpdateGarmentDto } from './dto';
+import { Garment } from './entities';
+import {
+  EExceptionsOptions,
+  EGenericResponse,
+  ErrorCatchService,
+  ResponseGenericDto,
+  ResponseGenericInfoDto,
+} from '../common';
 
 @Injectable()
 export class GarmentsService {
@@ -26,47 +29,52 @@ export class GarmentsService {
 
       return new ResponseGenericInfoDto().createResponse(
         true,
-        'Garment was created',
-        id
+        EGenericResponse.create,
+        { id }
       );
     } catch (error) {
-      return this.errorCatch.errorCatch();
+      return this.errorCatch.exceptionsOptions(error);
     }
   }
 
   async findAll() {
-    const data = await this.garmentRepository.find({
-      select: {
-        id: true,
-        code_garment: true,
-        description: true,
-        number_garments: true,
-        price: true,
-      },
-      where: {
-        status: true,
-      },
-      order: {
-        id: 'ASC',
-      },
-    });
+    try {
+      const data = await this.garmentRepository.find({
+        where: {
+          status: true,
+        },
+        order: {
+          id: 'ASC',
+        },
+      });
 
-    return new ResponseGenericDto().createResponse(true, 'Information found', data);
+      return new ResponseGenericDto().createResponse(
+        true,
+        EGenericResponse.found,
+        data
+      );
+    } catch (error) {
+      return this.errorCatch.exceptionsOptions(error);
+    }
   }
 
   async findOne(code_garment: number) {
-    const data = await this.garmentRepository.findOneBy({
-      code_garment,
-      status: true,
-    });
+    try {
+      const data = await this.garmentRepository.findOneBy({
+        code_garment,
+        status: true,
+      });
 
-    if (!data || data === null) return this.errorCatch.notExitsCatch(code_garment);
+      if (!data) throw new Error(EExceptionsOptions.notFoundGarment);
 
-    return new ResponseGenericInfoDto().createResponse(
-      true,
-      'Information found',
-      data
-    );
+      return new ResponseGenericInfoDto().createResponse(
+        true,
+        'Information found',
+        data
+      );
+    } catch (error) {
+      return this.errorCatch.exceptionsOptions(error);
+    }
   }
 
   async update(idGarment: number, updateGarmentDto: UpdateGarmentDto) {
@@ -77,18 +85,18 @@ export class GarmentsService {
         updatedAt: new Date().toLocaleDateString('en-US'),
       });
 
-      if (!data || !data.status) return this.errorCatch.notExitsCatch(idGarment);
+      if (!data) throw new Error(EExceptionsOptions.notFoundGarment);
 
       const { id, code_garment, description, number_garments, price } =
         await this.garmentRepository.save(data);
 
       return new ResponseGenericInfoDto().createResponse(
         true,
-        'Garment was updated',
+        EGenericResponse.update,
         { id, code_garment, description, number_garments, price }
       );
     } catch (error) {
-      return this.errorCatch.errorCatch();
+      return this.errorCatch.exceptionsOptions(error);
     }
   }
 
@@ -99,15 +107,15 @@ export class GarmentsService {
         { status: false, updatedAt: new Date().toLocaleDateString('en-US') }
       );
 
-      if (!data) return this.errorCatch.notExitsCatch(id);
+      if (!data) throw new Error(EExceptionsOptions.notFoundGarment);
 
       return new ResponseGenericInfoDto().createResponse(
         true,
-        'Garment was deleted',
-        id
+        EGenericResponse.delete,
+        { id }
       );
     } catch (error) {
-      return this.errorCatch.errorCatch();
+      return this.errorCatch.exceptionsOptions(error);
     }
   }
 }

@@ -24,19 +24,58 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Rest api
 
 ## Installation
 
-```bash
-$ pnpm install
+1. Install all dependencies
+
 ```
+yarn install
+```
+
+2. Build the container with database, comment the container you don't need `app - Rest; front - Front; db - DataBase`
+
+```
+docker compose up -d
+```
+
+3. Create environment file `.env`
+
+| Variable     | Value                                     | Description                                                 |
+| ------------ | ----------------------------------------- | ----------------------------------------------------------- |
+| PORT         | 3000                                      | Port that the server listens on                             |
+| HOST_BD      | localhost                                 | Host to connect database                                    |
+| PORT_BD      | 5432                                      | Port to connect database                                    |
+| USER_BD      | postgres                                  | User to connect database                                    |
+| PASSWORD_BD  |                                           | Password to connect database, developer select the password |
+| BD_NAME      | NameDB                                    | Database name to connect database                           |
+| STAGE        | dev                                       | Stage you want to run the app                               |
+| IMAGE_DOCKER | alderickrios/limpiaduria_linea_azul:2.0.1 | Image to run the api with docker                            |
 
 ## Running the app
 
 ```bash
 
 # watch mode
-$ pnpm run start:dev
+$ yarn run start:dev
 
+```
+
+## Docker Image
+
+`Dockerfile` is the config to create and deploy on docker hub an image with the api
+
+You can run the next command; we use buildx to build with different OS/ARCH:
+
+1. Create an profile with buildx
+
+```
+docker buildx create --name mybuilder --driver docker-container --bootstrap
+```
+
+2. Build the image
+
+```
+docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 -t <username>/<image>:latest --push .
 ```
