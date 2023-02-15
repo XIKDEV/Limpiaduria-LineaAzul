@@ -109,7 +109,6 @@ export class NotesService {
           cancel: false,
         },
       });
-      console.log(data);
       return new ResponseGenericDto().createResponse(
         true,
         EGenericResponse.found,
