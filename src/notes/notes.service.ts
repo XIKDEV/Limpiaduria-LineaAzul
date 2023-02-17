@@ -74,16 +74,7 @@ export class NotesService {
         },
         select: { id: true },
       });
-      if (!data.length) {
-        return new ResponseGenericInfoDto().createResponse(
-          true,
-          EGenericResponse.newFolio,
-          {
-            id: 1,
-          }
-        );
-      }
-      const newFolio = data.pop().id + 1;
+      const newFolio = !data.length ? 1 : data.pop().id + 1;
       return new ResponseGenericInfoDto().createResponse(
         true,
         EGenericResponse.newFolio,
@@ -339,12 +330,6 @@ export class NotesService {
           status: true,
         })
         .getRawOne();
-      if (!data.sum)
-        return new ResponseGenericInfoDto().createResponse(
-          true,
-          EGenericResponse.notGarmentDelivery,
-          { total: 0 }
-        );
 
       return new ResponseGenericInfoDto().createResponse(
         true,
@@ -365,13 +350,6 @@ export class NotesService {
           date: date,
         })
         .getRawOne();
-
-      if (!data.sum)
-        return new ResponseGenericInfoDto().createResponse(
-          true,
-          EGenericResponse.notGarmentDelivery,
-          { total: Number(data.sum) }
-        );
 
       return new ResponseGenericInfoDto().createResponse(
         true,

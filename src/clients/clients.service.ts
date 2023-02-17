@@ -96,9 +96,7 @@ export class ClientsService {
         },
       });
 
-      if (!data) {
-        throw new Error(EExceptionsOptions.notFoundClient);
-      }
+      if (!data) throw new Error(EExceptionsOptions.notFoundClient);
 
       const { notes, ...restData } = data;
 
