@@ -12,6 +12,17 @@ services:
     container_name: Limpiaduria_LineaAzul
     volumes:
       - ./postgres:/var/lib/postgresql/data
+  db_test:
+    image: postgres:14.3
+    restart: always
+    ports:
+      - '5433:5432'
+    environment:
+      POSTGRES_PASSWORD: ${PASSWORD_BD_TEST}
+      POSTGRES_DB: ${BD_NAME_TEST}
+    container_name: Limpiaduria_LineaAzul_Testing
+    volumes:
+      - postgres_test:/var/lib/postgresql/data
   # app:
   #     depends_on:
   #       - db
@@ -38,3 +49,6 @@ services:
   #   restart: always
   #   ports:
   #     - "80:80"
+volumes:
+  postgres_test:
+    external: false
