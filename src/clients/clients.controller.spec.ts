@@ -2,7 +2,12 @@ import { ConfigModule } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { CommonModule, EGenericResponse, ResponseGenericDto } from '../common';
+import {
+  CommonModule,
+  EGenericResponse,
+  ResponseGenericDto,
+  ResponseGenericInfoDto,
+} from '../common';
 import { ClientsController, ClientsService, Client, ClientListDto } from '.';
 import { DetailNote, Note } from '../notes/entities';
 import { Garment } from '../garments/entities';
@@ -67,6 +72,21 @@ describe('ClientsController', () => {
       jest.spyOn(clientsService, 'findAll').mockImplementation(() => result);
       const clientList = await clientsController.findAll();
       expect(clientList.data).toEqual(data);
+    });
+
+    it('Should create a new client', async () => {
+      const result: any = new ResponseGenericInfoDto().createResponse(
+        true,
+        EGenericResponse.create,
+        { id: 1 }
+      );
+      // jest.spyOn(clientsService, 'create').mockImplementation(() => result);
+      const clientList: any = await clientsController.create({
+        name: 'Adilene',
+        email: 'adi@gmail.com',
+        cellphone: '12341234',
+      });
+      expect(clientList.data).toEqual({ id: 1 });
     });
   });
 });
