@@ -31,6 +31,7 @@ describe('ClientsController', () => {
           password: process.env.PASSWORD_BD_TEST,
           autoLoadEntities: true,
           synchronize: true,
+          dropSchema: true,
         }),
         TypeOrmModule.forFeature([Client, Note, DetailNote, Garment]),
         CommonModule,
@@ -41,11 +42,7 @@ describe('ClientsController', () => {
     clientsService = await moduleRef.resolve(ClientsService);
   });
 
-  afterAll((done) => {
-    done();
-  });
-
-  describe('ClientsList', () => {
+  describe('Get client', () => {
     const data = [
       {
         id: 1,
@@ -61,8 +58,18 @@ describe('ClientsController', () => {
         ClientListDto
       ).createResponse(true, EGenericResponse.found, data);
       jest.spyOn(clientsService, 'findAll').mockImplementation(() => result);
+      const expectResult = await clientsController.findAll();
 
-      expect(await clientsController.findAll()).toStrictEqual(result);
+      expect(expectResult).toStrictEqual(result);
+    });
+    it('Should return a generic response - findOne', async () => {
+      const result: any = new ResponseGenericDto<ClientListDto>(
+        ClientListDto
+      ).createResponse(true, EGenericResponse.found, data);
+      jest.spyOn(clientsService, 'findOne').mockImplementation(() => result);
+      const expectResult = await clientsController.findOne(1);
+
+      expect(expectResult).toStrictEqual(result);
     });
 
     it('Should return a client list', async () => {
@@ -71,22 +78,51 @@ describe('ClientsController', () => {
       ).createResponse(true, EGenericResponse.found, data);
       jest.spyOn(clientsService, 'findAll').mockImplementation(() => result);
       const clientList = await clientsController.findAll();
-      expect(clientList.data).toEqual(data);
+      expect(clientList.data).toStrictEqual(data);
     });
+  });
 
+  describe('Create client', () => {
     it('Should create a new client', async () => {
-      const result: any = new ResponseGenericInfoDto().createResponse(
-        true,
-        EGenericResponse.create,
-        { id: 1 }
-      );
-      // jest.spyOn(clientsService, 'create').mockImplementation(() => result);
       const clientList: any = await clientsController.create({
         name: 'Adilene',
         email: 'adi@gmail.com',
         cellphone: '12341234',
       });
       expect(clientList.data).toEqual({ id: 1 });
+    });
+
+    it('Should return generic response with mockImplementation', async () => {
+      const result: any = new ResponseGenericInfoDto().createResponse(
+        true,
+        EGenericResponse.create,
+        { id: 1 }
+      );
+      jest.spyOn(clientsService, 'create').mockImplementation(() => result);
+      const clientList: any = await clientsController.create({
+        name: 'Adilene',
+        email: 'adi@gmail.com',
+        cellphone: '12341234',
+      });
+      expect(clientList).toEqual(result);
+    });
+  });
+
+  describe('Update client', () => {
+    const data = {
+      name: 'Adilene Zarate',
+      email: 'adi@gmail.com',
+      cellphone: '12341234',
+    };
+    it('Should return generic response with mockImplementation', async () => {
+      const result: any = new ResponseGenericInfoDto().createResponse(
+        true,
+        EGenericResponse.create,
+        data
+      );
+      jest.spyOn(clientsService, 'update').mockImplementation(() => result);
+      const clientList: any = await clientsController.update(1, data);
+      expect(clientList).toEqual(result);
     });
   });
 });
