@@ -43,6 +43,7 @@ export class NotesService {
 
       const data = this.noteRepository.create({
         ...createDetail,
+        client: idClient,
         details: details.map(
           ({ id_g, price, quantity_receive, quantity_by_garments }) =>
             this.detailNoteRepository.create({
@@ -92,6 +93,7 @@ export class NotesService {
       const data = await this.noteRepository.find({
         relations: {
           details: true,
+          client: true,
         },
         where: {
           status: false,
@@ -103,8 +105,7 @@ export class NotesService {
         EGenericResponse.found,
         data.map((note) => {
           const { client, amount, missing_pay, id, createdAt: created } = note;
-          const { status, createdAt, updatedAt, email, cellphone, ...clientInfo } =
-            client;
+          const { email, cellphone, ...clientInfo } = client;
 
           return {
             id,
@@ -142,6 +143,7 @@ export class NotesService {
       const data = await this.noteRepository.find({
         relations: {
           details: true,
+          client: true,
         },
         where: {
           cancel: false,
@@ -159,8 +161,7 @@ export class NotesService {
             status: statusNote,
             createdAt: created,
           } = note;
-          const { status, createdAt, updatedAt, email, cellphone, ...clientInfo } =
-            client;
+          const { email, cellphone, ...clientInfo } = client;
 
           return {
             id,
@@ -365,7 +366,7 @@ export class NotesService {
     try {
       const data = await this.noteRepository
         .createQueryBuilder('note')
-        .select('SUM(detail_note.quantity) as quantityGarments')
+        .select('SUM(detail_note.quantity_by_garments) as quantityGarments')
         .innerJoin('note.details', 'detail_note')
         .innerJoin('detail_note.id_g', 'garment')
         .addSelect('detail_note.id_g')
@@ -396,7 +397,7 @@ export class NotesService {
     try {
       const data = await this.noteRepository
         .createQueryBuilder('note')
-        .select('SUM(detail_note.quantity) as quantityGarments')
+        .select('SUM(detail_note.quantity_by_garments) as quantityGarments')
         .innerJoin('note.details', 'detail_note')
         .innerJoin('detail_note.id_g', 'garment')
         .addSelect('detail_note.id_g')
