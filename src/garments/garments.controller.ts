@@ -8,7 +8,7 @@ import {
 
 import { GarmentsService } from './garments.service';
 import { UpdateGarmentDto, CreateGarmentDto } from './dto';
-import { ERestApi, Swagger } from 'src/common';
+import { ERestApi, Swagger } from '../common';
 import { ApiTags } from '@nestjs/swagger';
 
 @Controller('garments')

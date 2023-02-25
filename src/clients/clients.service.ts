@@ -12,6 +12,7 @@ import {
   ErrorCatchService,
   ResponseGenericDto,
 } from '../common';
+import { HttpException } from '@nestjs/common/exceptions/http.exception';
 
 @Injectable()
 export class ClientsService {
@@ -37,7 +38,7 @@ export class ClientsService {
     }
   }
 
-  async findAll() {
+  async findAll(): Promise<any> {
     try {
       const data = await this.clientRepository.find({
         where: { status: true },
