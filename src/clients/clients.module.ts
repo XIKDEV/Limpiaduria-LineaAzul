@@ -3,8 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ClientsService } from './clients.service';
 import { ClientsController } from './clients.controller';
-import { CommonModule } from '../common/common.module';
-import { Client } from './entities/client.entity';
+import { CommonModule } from '../common';
+import { Client } from './entities';
 
 @Module({
   controllers: [ClientsController],

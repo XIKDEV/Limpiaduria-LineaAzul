@@ -1,16 +1,22 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Type } from 'class-transformer';
 
 export class ResponseGenericDto<T> {
   @Exclude()
   type: Function;
 
+  @ApiProperty()
   success: boolean;
 
+  @ApiProperty({
+    example: [],
+  })
   @Type((data) => {
     return data.newObject(new ResponseGenericDto()).type;
   })
   data: T[];
 
+  @ApiProperty()
   message: string;
 
   constructor(type?: Function) {
@@ -20,7 +26,7 @@ export class ResponseGenericDto<T> {
   createResponse(
     Success: boolean,
     Message: string,
-    Data: T[] = [],
+    Data: T[] = []
   ): ResponseGenericDto<T> {
     const resp = new ResponseGenericDto<T>();
 
