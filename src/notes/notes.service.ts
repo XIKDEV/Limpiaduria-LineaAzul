@@ -149,46 +149,24 @@ export class NotesService {
           cancel: false,
         },
       });
+
+      const mappedNotes = data.map((note) => ({
+        id: note.id,
+        created: note.createdAt,
+        statusNote: note.status,
+        amount: note.amount,
+        missing_pay: note.missing_pay,
+        client: { ...note.client, email: null, cellphone: null },
+        details: note.details.map(({ id_n, id_g, price }) => ({
+          ...id_n,
+          garment: { ...id_g, price },
+        })),
+      }));
+
       return new ResponseGenericDto().createResponse(
         true,
         EGenericResponse.found,
-        data.map((note) => {
-          const {
-            client,
-            amount,
-            missing_pay,
-            id,
-            status: statusNote,
-            createdAt: created,
-          } = note;
-          const { email, cellphone, ...clientInfo } = client;
-
-          return {
-            id,
-            created,
-            statusNote,
-            amount,
-            missing_pay,
-            client: clientInfo,
-            details: note.details.map((detail) => {
-              const { id_n, id_g, price: priceInDetail, ...detailRest } = detail;
-              const {
-                createdAt,
-                updatedAt,
-                price,
-                status,
-                id,
-                code_garment,
-                ...garmentInfo
-              } = id_g;
-
-              return {
-                ...detailRest,
-                garment: garmentInfo,
-              };
-            }),
-          };
-        })
+        mappedNotes
       );
     } catch (error) {
       return this.errorCatch.exceptionsOptions(error);
