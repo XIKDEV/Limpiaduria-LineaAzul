@@ -22,6 +22,11 @@ export class ClientsService {
     private readonly errorCatch: ErrorCatchService
   ) {}
 
+  /**
+   * It creates a new client and returns a response with the id of the created client
+   * @param {CreateClientDto} createClientDto - CreateClientDto
+   * @returns A ResponseGenericInfoDto object.
+   */
   async create(createClientDto: CreateClientDto) {
     try {
       const data = this.clientRepository.create(createClientDto);
@@ -38,6 +43,11 @@ export class ClientsService {
     }
   }
 
+  /**
+   * I'm trying to get all the clients that are active, and I want to get all the notes that are
+   * related to each client.
+   * @returns A ResponseGenericDto<ClientListDto>
+   */
   async findAll(): Promise<any> {
     try {
       const data = await this.clientRepository.find({
@@ -85,6 +95,21 @@ export class ClientsService {
     }
   }
 
+  /**
+   * "I'm trying to get the client's notes, but I don't want to get the client's data in the notes."
+   * </code>
+   * @param {number} id - number
+   * @returns {
+   *   "success": true,
+   *   "message": "Cliente encontrado",
+   *   "data": {
+   *     "id": 1,
+   *     "name": "Cliente 1",
+   *     "email": "cliente1@gmail.com",
+   *     "phone": "123456789",
+   *     "notes": [
+   *       {
+   */
   async findOne(id: number) {
     try {
       const data = await this.clientRepository.findOne({
@@ -119,6 +144,13 @@ export class ClientsService {
     }
   }
 
+  /**
+   * It updates a client in the database, if it exists, and returns a response with the updated client's
+   * data.
+   * @param {number} idClient - number
+   * @param {UpdateClientDto} updateClientDto - UpdateClientDto
+   * @returns The response is a generic response that is created in the class ResponseGenericInfoDto.
+   */
   async update(idClient: number, updateClientDto: UpdateClientDto) {
     try {
       const data = await this.clientRepository.preload({
@@ -141,6 +173,12 @@ export class ClientsService {
     }
   }
 
+  /**
+   * It updates the status of a client to false and returns a response with the id of the client.
+   * @param {number} idClient - number
+   * @returns The response is a generic response, which is a class that has a method that returns a
+   * generic response.
+   */
   async remove(idClient: number) {
     try {
       const data = this.clientRepository.update(
