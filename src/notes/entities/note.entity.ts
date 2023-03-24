@@ -30,23 +30,33 @@ export class Note {
   @ApiProperty()
   details: DetailNote[];
 
-  @Column('decimal')
+  @Column('decimal', {
+    nullable: true,
+  })
   @ApiProperty()
   amount: number;
 
-  @Column('int')
+  @Column('int', {
+    nullable: true,
+  })
   @ApiProperty()
   total_garments: number;
 
-  @Column('decimal')
+  @Column('decimal', {
+    nullable: true,
+  })
   @ApiProperty()
   client_pay: number;
 
-  @Column('decimal')
+  @Column('decimal', {
+    nullable: true,
+  })
   @ApiProperty()
   change: number;
 
-  @Column('decimal')
+  @Column('decimal', {
+    nullable: true,
+  })
   @ApiProperty()
   missing_pay: number;
 
