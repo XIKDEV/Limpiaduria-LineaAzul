@@ -12,43 +12,43 @@ services:
     container_name: Limpiaduria_LineaAzul
     volumes:
       - ./postgres:/var/lib/postgresql/data
-  db_test:
-    image: postgres:14.3
-    restart: always
+  # db_test:
+  #   image: postgres:14.3
+  #   restart: always
+  #   ports:
+  #     - '5433:5432'
+  #   environment:
+  #     POSTGRES_PASSWORD: ${PASSWORD_BD_TEST}
+  #     POSTGRES_DB: ${BD_NAME_TEST}
+  #   container_name: Limpiaduria_LineaAzul_Testing
+  #   volumes:
+  #     - postgres_test:/var/lib/postgresql/data
+  app:
+    depends_on:
+      - db
+    container_name: lla
+    image: alderickrios/limpiaduria_linea_azul:cassieCage
     ports:
-      - '5433:5432'
+      - ${PORT}:${PORT}
     environment:
-      POSTGRES_PASSWORD: ${PASSWORD_BD_TEST}
-      POSTGRES_DB: ${BD_NAME_TEST}
-    container_name: Limpiaduria_LineaAzul_Testing
-    volumes:
-      - postgres_test:/var/lib/postgresql/data
-  # app:
-  #     depends_on:
-  #       - db
-  #     container_name: lla
-  #     image: ${IMAGE_DOCKER}
-  #     ports:
-  #       - ${PORT}:${PORT}
-  #     environment:
-  #       PORT: ${PORT}
-  #       HOST_BD: ${HOST_BD}
-  #       PORT_BD: ${PORT_BD}
-  #       USER_BD: ${USER_BD}
-  #       PASSWORD_BD: ${PASSWORD_BD}
-  #       BD_NAME: ${BD_NAME}
-  #     restart: always
+      PORT: ${PORT}
+      HOST_BD: ${HOST_BD}
+      PORT_BD: ${PORT_BD}
+      USER_BD: ${USER_BD}
+      PASSWORD_BD: ${PASSWORD_BD}
+      BD_NAME: ${BD_NAME}
+    restart: always
 
   # front:
   #   depends_on:
   #     - app
   #   container_name: front_lla
-  #   image: alderickrios/front_limpiaduria_linea_azul:baldur
+  #   image: alderickrios/front_limpiaduria_linea_azul:atreus
   #   # environment:
   #   #   VITE_BACKEND_URL: ${VITE_BACKEND_URL}
   #   restart: always
   #   ports:
-  #     - "80:80"
+  #     - '80:80'
 volumes:
   postgres_test:
     external: false

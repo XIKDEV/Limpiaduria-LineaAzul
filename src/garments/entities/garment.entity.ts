@@ -17,7 +17,9 @@ export class Garment {
   @ApiProperty()
   id: number;
 
-  @Column('decimal')
+  @Column('decimal', {
+    nullable: true,
+  })
   @Index({
     unique: true,
     where: '(status=true)',
@@ -25,16 +27,21 @@ export class Garment {
   @ApiProperty()
   code_garment: number;
 
-  @Column('text')
+  @Column('text', {
+    nullable: true,
+  })
   @ApiProperty()
   description: string;
 
-  @Column('int')
+  @Column('int', {
+    nullable: true,
+  })
   @ApiProperty()
   number_garments: number;
 
   @Column('decimal', {
     default: 0,
+    nullable: true,
   })
   @ApiProperty()
   price: number;
