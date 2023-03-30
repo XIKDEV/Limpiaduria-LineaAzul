@@ -43,12 +43,12 @@ services:
   #   depends_on:
   #     - app
   #   container_name: front_lla
-  #   image: alderickrios/front_limpiaduria_linea_azul:baldur
+  #   image: alderickrios/front_limpiaduria_linea_azul:atreus
   #   # environment:
   #   #   VITE_BACKEND_URL: ${VITE_BACKEND_URL}
   #   restart: always
   #   ports:
-  #     - "80:80"
+  #     - '80:80'
 volumes:
   postgres_test:
     external: false

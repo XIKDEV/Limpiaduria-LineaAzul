@@ -213,8 +213,8 @@ export class NotesService {
         amount: note.amount,
         missing_pay: note.missing_pay,
         client: { ...note.client, email: null, cellphone: null },
-        details: note.details.map(({ id_n, id_g, price }) => ({
-          ...id_n,
+        details: note.details.map(({ id_g, price, quantity_receive }) => ({
+          quantity_receive,
           garment: { ...id_g, price },
         })),
       }));
