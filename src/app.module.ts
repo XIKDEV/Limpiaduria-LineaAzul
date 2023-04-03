@@ -8,6 +8,7 @@ import { ClientsModule } from './clients/clients.module';
 import { GarmentsModule } from './garments/garments.module';
 import { NotesModule } from './notes/notes.module';
 import { CatchFilter } from './common/filter/catch.filter';
+import { SocketNotesModule } from './socket-notes/socket-notes.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { CatchFilter } from './common/filter/catch.filter';
     ClientsModule,
     GarmentsModule,
     NotesModule,
+    SocketNotesModule,
   ],
   providers: [
     {

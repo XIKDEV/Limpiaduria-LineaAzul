@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
 
+import { Garment } from '../garments/entities';
 import { Client } from '../clients/entities';
 import {
   ResponseGenericInfoDto,
@@ -23,9 +24,24 @@ export class NotesService {
     private readonly detailNoteRepository: Repository<DetailNote>,
     @InjectRepository(Client)
     private readonly clientRepository: Repository<Client>,
+    @InjectRepository(Garment)
+    private readonly garmentRepository: Repository<Garment>,
     private readonly errorCatch: ErrorCatchService
   ) {}
 
+  /**
+   * I want to create a note with details, but I want to create the details first and then create the
+   * note with the details.
+   * </code>
+   * @param {CreateNoteDto} createNoteDto - CreateNoteDto
+   * @returns {
+   *   "success": true,
+   *   "message": "create",
+   *   "data": {
+   *     "id": 1
+   *   }
+   * }
+   */
   async create(createNoteDto: CreateNoteDto) {
     try {
       const { details = [], client, ...createDetail } = createNoteDto;
@@ -40,7 +56,6 @@ export class NotesService {
       });
 
       if (!idClient) throw new Error(EExceptionsOptions.notFoundClient);
-
       const data = this.noteRepository.create({
         ...createDetail,
         client: idClient,
@@ -67,6 +82,17 @@ export class NotesService {
     }
   }
 
+  /**
+   * It returns the last id in the database + 1.
+   * @returns The response is a JSON object with the following structure:
+   * {
+   *   "success": true,
+   *   "message": "newFolio",
+   *   "data": {
+   *     "id": 1
+   *   }
+   * }
+   */
   async newFolio() {
     try {
       const data = await this.noteRepository.find({
@@ -88,6 +114,21 @@ export class NotesService {
     }
   }
 
+  /**
+   * I'm trying to get all the notes that are not canceled or finished, and I want to get the details
+   * of each note, and the client of each note.
+   * </code>
+   * @returns [
+   *   {
+   *     "id": 1,
+   *     "created": "2020-04-20T18:00:00.000Z",
+   *     "amount": 0,
+   *     "missing_pay": 0,
+   *     "client": {
+   *       "id": 1,
+   *       "name": "Juan",
+   *       "lastname": "P
+   */
   async findAll() {
     try {
       const data = await this.noteRepository.find({
@@ -138,6 +179,21 @@ export class NotesService {
     }
   }
 
+  /**
+   * It returns a list of notes, each note has a client and a list of details, each detail has a
+   * garment.
+   * </code>
+   * @returns [
+   *   {
+   *     "id": 1,
+   *     "created": "2020-04-20T00:00:00.000Z",
+   *     "statusNote": "PENDING",
+   *     "amount": 0,
+   *     "missing_pay": 0,
+   *     "client": {
+   *       "id": 1,
+   *       "name": "
+   */
   async findAllSearchService() {
     try {
       const data = await this.noteRepository.find({
@@ -149,52 +205,47 @@ export class NotesService {
           cancel: false,
         },
       });
+
+      const mappedNotes = data.map((note) => ({
+        id: note.id,
+        created: note.createdAt,
+        statusNote: note.status,
+        amount: note.amount,
+        missing_pay: note.missing_pay,
+        client: { ...note.client, email: null, cellphone: null },
+        details: note.details.map(({ id_g, price, quantity_receive }) => ({
+          quantity_receive,
+          garment: { ...id_g, price },
+        })),
+      }));
+
       return new ResponseGenericDto().createResponse(
         true,
         EGenericResponse.found,
-        data.map((note) => {
-          const {
-            client,
-            amount,
-            missing_pay,
-            id,
-            status: statusNote,
-            createdAt: created,
-          } = note;
-          const { email, cellphone, ...clientInfo } = client;
-
-          return {
-            id,
-            created,
-            statusNote,
-            amount,
-            missing_pay,
-            client: clientInfo,
-            details: note.details.map((detail) => {
-              const { id_n, id_g, price: priceInDetail, ...detailRest } = detail;
-              const {
-                createdAt,
-                updatedAt,
-                price,
-                status,
-                id,
-                code_garment,
-                ...garmentInfo
-              } = id_g;
-
-              return {
-                ...detailRest,
-                garment: garmentInfo,
-              };
-            }),
-          };
-        })
+        mappedNotes
       );
     } catch (error) {
       return this.errorCatch.exceptionsOptions(error);
     }
   }
 
+  /**
+   * I'm trying to get the data from the note table, and the data from the client table, and the data
+   * from the detail table, and the data from the garment table.
+   * </code>
+   * @param {number} id - number
+   * @returns {
+   *   "success": true,
+   *   "message": "found",
+   *   "data": {
+   *     "id": 1,
+   *     "client": {
+   *       "id": 1,
+   *       "name": "Juan",
+   *       "lastname": "Perez",
+   *       "phone": "123456789",
+   *       "email":
+   */
   async findOne(id: number) {
     try {
       const { client, ...data } = await this.noteRepository.findOne({
@@ -232,6 +283,11 @@ export class NotesService {
     }
   }
 
+  /**
+   * It updates the note in the database and returns a response with the id of the note.
+   * @param {number} id - number
+   * @returns A ResponseGenericInfoDto object.
+   */
   async deliverNote(id: number) {
     try {
       const data = await this.noteRepository.update(id, {
@@ -252,6 +308,11 @@ export class NotesService {
     }
   }
 
+  /**
+   * It updates the note and the detail note, and returns a response.
+   * @param {any} id - any
+   * @returns The return is a ResponseGenericInfoDto object.
+   */
   async remove(id: any) {
     try {
       const data = await this.noteRepository.preload({
@@ -284,6 +345,12 @@ export class NotesService {
     }
   }
 
+  /**
+   * It returns a response with the total of notes that have the status true and the updatedAt date
+   * equal to the date passed as a parameter.
+   * @param {string} date - string
+   * @returns A ResponseGenericInfoDto object.
+   */
   async garmentsDelivery(date: string) {
     try {
       const data = await this.noteRepository.count({
@@ -303,6 +370,11 @@ export class NotesService {
     }
   }
 
+  /**
+   * It returns a response with a count of the number of notes created on a given date.
+   * @param {string} date - string
+   * @returns A ResponseGenericInfoDto object.
+   */
   async garmentsReceived(date: string) {
     try {
       const data = await this.noteRepository.count({
@@ -321,6 +393,20 @@ export class NotesService {
     }
   }
 
+  /**
+   * It returns the sum of the total_garments field of all the notes that have the updatedAt field
+   * equal to the date parameter and the status field equal to true.
+   * </code>
+   * @param {string} date - string =&gt; the date that I want to search for
+   * @returns The response is a JSON object with the following structure:
+   * {
+   *   "success": true,
+   *   "message": "found",
+   *   "data": {
+   *     "total": 0
+   *   }
+   * }
+   */
   async totalGarmentsDelivery(date: string) {
     try {
       const data = await this.noteRepository
@@ -342,6 +428,12 @@ export class NotesService {
     }
   }
 
+  /**
+   * It returns the sum of the total_garments field of all the notes created on the date passed as a
+   * parameter.
+   * @param {string} date - string
+   * @returns The total of garments received in a specific date.
+   */
   async totalGarmentsReceived(date: string) {
     try {
       const data = await this.noteRepository
@@ -362,6 +454,24 @@ export class NotesService {
     }
   }
 
+  /**
+   * It returns the sum of the quantity of garments received by date.
+   * </code>
+   * @param {string} date - string
+   * @returns [
+   *   {
+   *     "garmentDescription": "PANTALON",
+   *     "quantityGarments": 1,
+   *     "id": 1
+   *   },
+   *   {
+   *     "garmentDescription": "CAMISA",
+   *     "quantityGarments": 1,
+   *     "id": 2
+   *   },
+   *   {
+   *     "garment
+   */
   async tableGarmentReceive(date: string) {
     try {
       const data = await this.noteRepository
@@ -393,6 +503,24 @@ export class NotesService {
     }
   }
 
+  /**
+   * It returns the sum of the quantity of garments by garment id and garment description.
+   * </code>
+   * @param {string} date - string
+   * @returns [
+   *   {
+   *     "garmentDescription": "Camisa",
+   *     "quantityGarments": 1,
+   *     "id": 1
+   *   },
+   *   {
+   *     "garmentDescription": "Pantalon",
+   *     "quantityGarments": 1,
+   *     "id": 2
+   *   },
+   *   {
+   *     "garmentDescription":
+   */
   async tableGarmentDelivery(date: string) {
     try {
       const data = await this.noteRepository

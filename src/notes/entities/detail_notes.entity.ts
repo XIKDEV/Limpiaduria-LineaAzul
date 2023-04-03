@@ -24,13 +24,19 @@ export class DetailNote {
   @IsNotEmpty()
   id_n: Note;
 
-  @Column('int')
+  @Column('int', {
+    nullable: true,
+  })
   quantity_receive: number;
 
-  @Column('int')
+  @Column('int', {
+    nullable: true,
+  })
   quantity_by_garments: number;
 
-  @Column('decimal')
+  @Column('decimal', {
+    nullable: true,
+  })
   @ApiProperty()
   @IsNotEmpty()
   price: number;

@@ -21,6 +21,11 @@ export class GarmentsService {
     private readonly errorCatch: ErrorCatchService
   ) {}
 
+  /**
+   * It creates a new garment and returns the id of the newly created garment
+   * @param {CreateGarmentDto} createGarmentDto - CreateGarmentDto
+   * @returns A ResponseGenericInfoDto object.
+   */
   async create(createGarmentDto: CreateGarmentDto) {
     try {
       const data = this.garmentRepository.create(createGarmentDto);
@@ -37,6 +42,10 @@ export class GarmentsService {
     }
   }
 
+  /**
+   * It returns a response object with a boolean, a string, and an array of objects.
+   * @returns A ResponseGenericDto object.
+   */
   async findAll() {
     try {
       const data = await this.garmentRepository.find({
@@ -58,6 +67,11 @@ export class GarmentsService {
     }
   }
 
+  /**
+   * It finds a garment by its code_garment and returns a response with the data or an error.
+   * @param {number} code_garment - number
+   * @returns The response is a JSON object with the following structure:
+   */
   async findOne(code_garment: number) {
     try {
       const data = await this.garmentRepository.findOneBy({
@@ -77,6 +91,15 @@ export class GarmentsService {
     }
   }
 
+  /**
+   * "The function receives an id and an object with the data to be updated, then it searches for the
+   * id in the database, if it does not find it, it throws an error, if it finds it, it updates the
+   * data and returns the updated data."
+   * </code>
+   * @param {number} idGarment - number, updateGarmentDto: UpdateGarmentDto
+   * @param {UpdateGarmentDto} updateGarmentDto - UpdateGarmentDto
+   * @returns a responseGenericInfoDto object.
+   */
   async update(idGarment: number, updateGarmentDto: UpdateGarmentDto) {
     try {
       const data = await this.garmentRepository.preload({
@@ -100,6 +123,12 @@ export class GarmentsService {
     }
   }
 
+  /**
+   * It updates the status of the garment to false and the updatedAt to the current date.
+   * @param {number} id - number
+   * @returns The response is a generic response that is created in the response-generic-info.dto.ts
+   * file.
+   */
   async remove(id: number) {
     try {
       const data = await this.garmentRepository.update(
