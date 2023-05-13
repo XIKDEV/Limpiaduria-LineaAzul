@@ -23,21 +23,21 @@ services:
   #   container_name: Limpiaduria_LineaAzul_Testing
   #   volumes:
   #     - postgres_test:/var/lib/postgresql/data
-  # app:
-  #     depends_on:
-  #       - db
-  #     container_name: lla
-  #     image: ${IMAGE_DOCKER}
-  #     ports:
-  #       - ${PORT}:${PORT}
-  #     environment:
-  #       PORT: ${PORT}
-  #       HOST_BD: ${HOST_BD}
-  #       PORT_BD: ${PORT_BD}
-  #       USER_BD: ${USER_BD}
-  #       PASSWORD_BD: ${PASSWORD_BD}
-  #       BD_NAME: ${BD_NAME}
-  #     restart: always
+  app:
+    depends_on:
+      - db
+    container_name: lla
+    image: alderickrios/limpiaduria_linea_azul:2.5.0
+    ports:
+      - ${PORT}:${PORT}
+    environment:
+      PORT: ${PORT}
+      HOST_BD: ${HOST_BD}
+      PORT_BD: ${PORT_BD}
+      USER_BD: ${USER_BD}
+      PASSWORD_BD: ${PASSWORD_BD}
+      BD_NAME: ${BD_NAME}
+    restart: always
 
   # front:
   #   depends_on:
