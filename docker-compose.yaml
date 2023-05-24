@@ -5,7 +5,7 @@ services:
     image: postgres:14.3
     restart: always
     ports:
-      - '5432:5432'
+      - '5434:5432'
     environment:
       POSTGRES_PASSWORD: ${PASSWORD_BD}
       POSTGRES_DB: ${BD_NAME}
@@ -24,26 +24,26 @@ services:
   #   volumes:
   #     - postgres_test:/var/lib/postgresql/data
   # app:
-  #     depends_on:
-  #       - db
-  #     container_name: lla
-  #     image: ${IMAGE_DOCKER}
-  #     ports:
-  #       - ${PORT}:${PORT}
-  #     environment:
-  #       PORT: ${PORT}
-  #       HOST_BD: ${HOST_BD}
-  #       PORT_BD: ${PORT_BD}
-  #       USER_BD: ${USER_BD}
-  #       PASSWORD_BD: ${PASSWORD_BD}
-  #       BD_NAME: ${BD_NAME}
-  #     restart: always
+  #   # depends_on:
+  #   #   - db
+  #   container_name: lla
+  #   image: alderickrios/limpiaduria_linea_azul:2.6.0
+  #   ports:
+  #     - ${PORT}:${PORT}
+  #   environment:
+  #     PORT: ${PORT}
+  #     HOST_BD: ${HOST_BD}
+  #     PORT_BD: ${PORT_BD}
+  #     USER_BD: ${USER_BD}
+  #     PASSWORD_BD: ${PASSWORD_BD}
+  #     BD_NAME: ${BD_NAME}
+  #   restart: always
 
   # front:
   #   depends_on:
   #     - app
   #   container_name: front_lla
-  #   image: alderickrios/front_limpiaduria_linea_azul:atreus
+  #   image: alderickrios/front_limpiaduria_linea_azul:2.6.0
   #   # environment:
   #   #   VITE_BACKEND_URL: ${VITE_BACKEND_URL}
   #   restart: always
