@@ -11,7 +11,9 @@ import {
   ErrorCatchService,
   ResponseGenericDto,
   ResponseGenericInfoDto,
+  pagination,
 } from '../common';
+import { queryParamsDto } from '../clients';
 
 @Injectable()
 export class GarmentsService {
@@ -46,8 +48,10 @@ export class GarmentsService {
    * It returns a response object with a boolean, a string, and an array of objects.
    * @returns A ResponseGenericDto object.
    */
-  async findAll() {
+  async findAll({ page, rows }: queryParamsDto) {
     try {
+      const { skip, take } = pagination({ page, rows });
+
       const data = await this.garmentRepository.find({
         where: {
           status: true,
@@ -55,12 +59,19 @@ export class GarmentsService {
         order: {
           id: 'ASC',
         },
+        skip,
+        take,
       });
 
       return new ResponseGenericDto().createResponse(
         true,
         EGenericResponse.found,
-        data
+        data,
+        {
+          count: data[1],
+          page: skip / 10,
+          rows: take,
+        }
       );
     } catch (error) {
       return this.errorCatch.exceptionsOptions(error);

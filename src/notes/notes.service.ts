@@ -11,9 +11,11 @@ import {
   ResponseGenericDto,
   EGenericResponse,
   EExceptionsOptions,
+  pagination,
 } from '../common';
 import { CreateNoteDto } from './dto';
 import { Note, DetailNote } from './entities';
+import { queryParamsDto } from '../clients';
 
 @Injectable()
 export class NotesService {
@@ -129,8 +131,9 @@ export class NotesService {
    *       "name": "Juan",
    *       "lastname": "P
    */
-  async findAll() {
+  async findAll({ page, rows }: queryParamsDto) {
     try {
+      const { skip, take } = pagination({ page, rows });
       const data = await this.noteRepository.find({
         relations: {
           details: true,
@@ -140,6 +143,8 @@ export class NotesService {
           status: false,
           cancel: false,
         },
+        skip,
+        take,
       });
       return new ResponseGenericDto().createResponse(
         true,
@@ -172,7 +177,12 @@ export class NotesService {
               };
             }),
           };
-        })
+        }),
+        {
+          count: data[1],
+          page: skip / 10,
+          rows: take,
+        }
       );
     } catch (error) {
       return this.errorCatch.exceptionsOptions(error);
@@ -194,8 +204,9 @@ export class NotesService {
    *       "id": 1,
    *       "name": "
    */
-  async findAllSearchService() {
+  async findAllSearchService({ page, rows }: queryParamsDto) {
     try {
+      const { skip, take } = pagination({ page, rows });
       const data = await this.noteRepository.find({
         relations: {
           details: true,
@@ -204,6 +215,8 @@ export class NotesService {
         where: {
           cancel: false,
         },
+        skip,
+        take,
       });
 
       const mappedNotes = data.map((note) => ({
@@ -222,7 +235,12 @@ export class NotesService {
       return new ResponseGenericDto().createResponse(
         true,
         EGenericResponse.found,
-        mappedNotes
+        mappedNotes,
+        {
+          count: data[1],
+          page: skip / 10,
+          rows: take,
+        }
       );
     } catch (error) {
       return this.errorCatch.exceptionsOptions(error);

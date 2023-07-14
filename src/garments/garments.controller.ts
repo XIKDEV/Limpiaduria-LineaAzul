@@ -4,12 +4,14 @@ import {
   Param,
   ParseFloatPipe,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 
 import { GarmentsService } from './garments.service';
 import { UpdateGarmentDto, CreateGarmentDto } from './dto';
 import { ERestApi, Swagger } from '../common';
 import { ApiTags } from '@nestjs/swagger';
+import { queryParamsDto } from '../clients';
 
 @Controller('garments')
 @ApiTags('Garment')
@@ -28,8 +30,8 @@ export class GarmentsController {
     restApi: ERestApi.getAll,
     url: 'GarmentsList',
   })
-  findAll() {
-    return this.garmentsService.findAll();
+  findAll(@Query() pagination: queryParamsDto) {
+    return this.garmentsService.findAll(pagination);
   }
 
   @Swagger({

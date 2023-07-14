@@ -31,13 +31,13 @@ export class Client {
   status: boolean;
 
   @Column('date', {
-    default: new Date().toLocaleDateString('en-US'),
+    default: new Date(),
     select: false,
   })
   createdAt: Date;
 
   @Column('date', {
-    default: new Date().toLocaleDateString('en-US'),
+    default: new Date(),
     select: false,
   })
   updatedAt: Date;

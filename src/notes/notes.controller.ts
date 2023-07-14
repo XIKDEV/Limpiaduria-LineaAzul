@@ -1,9 +1,10 @@
-import { Controller, Body, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Body, Query, Param, ParseIntPipe } from '@nestjs/common';
 
 import { NotesService } from './notes.service';
 import { CreateNoteDto } from './dto';
 import { EGenericResponse, ERestApi, Swagger } from '../common';
 import { ApiTags } from '@nestjs/swagger';
+import { queryParamsDto } from '../clients';
 
 @Controller('notes')
 @ApiTags('Note')
@@ -31,16 +32,16 @@ export class NotesController {
     restApi: ERestApi.getAll,
     url: 'RegisterNote',
   })
-  findAll() {
-    return this.notesService.findAll();
+  findAll(@Query() pagination: queryParamsDto) {
+    return this.notesService.findAll(pagination);
   }
 
   @Swagger({
     restApi: ERestApi.getAll,
     url: 'NotesListSearch',
   })
-  findAllSearchService() {
-    return this.notesService.findAllSearchService();
+  findAllSearchService(@Query() pagination: queryParamsDto) {
+    return this.notesService.findAllSearchService(pagination);
   }
 
   @Swagger({
