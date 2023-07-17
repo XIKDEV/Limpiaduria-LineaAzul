@@ -52,7 +52,7 @@ export class GarmentsService {
     try {
       const { skip, take } = pagination({ page, rows });
 
-      const data = await this.garmentRepository.find({
+      const data = await this.garmentRepository.findAndCount({
         where: {
           status: true,
         },
@@ -66,7 +66,7 @@ export class GarmentsService {
       return new ResponseGenericDto().createResponse(
         true,
         EGenericResponse.found,
-        data,
+        data[0],
         {
           count: data[1],
           page: skip / 10,

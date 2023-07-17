@@ -11,4 +11,9 @@ export class queryParamsDto {
   @IsString()
   @ApiPropertyOptional()
   rows: string;
+
+  @IsOptional()
+  @IsString()
+  @ApiPropertyOptional()
+  search?: string;
 }

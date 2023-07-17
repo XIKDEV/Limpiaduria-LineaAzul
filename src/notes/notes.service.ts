@@ -134,7 +134,7 @@ export class NotesService {
   async findAll({ page, rows }: queryParamsDto) {
     try {
       const { skip, take } = pagination({ page, rows });
-      const data = await this.noteRepository.find({
+      const data = await this.noteRepository.findAndCount({
         relations: {
           details: true,
           client: true,
@@ -149,7 +149,7 @@ export class NotesService {
       return new ResponseGenericDto().createResponse(
         true,
         EGenericResponse.found,
-        data.map((note) => {
+        data[0].map((note) => {
           const { client, amount, missing_pay, id, createdAt: created } = note;
           const { email, cellphone, ...clientInfo } = client;
 
@@ -207,7 +207,7 @@ export class NotesService {
   async findAllSearchService({ page, rows }: queryParamsDto) {
     try {
       const { skip, take } = pagination({ page, rows });
-      const data = await this.noteRepository.find({
+      const data = await this.noteRepository.findAndCount({
         relations: {
           details: true,
           client: true,
@@ -219,7 +219,7 @@ export class NotesService {
         take,
       });
 
-      const mappedNotes = data.map((note) => ({
+      const mappedNotes = data[0].map((note) => ({
         id: note.id,
         created: note.createdAt,
         statusNote: note.status,

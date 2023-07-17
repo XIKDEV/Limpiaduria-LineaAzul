@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Repository } from 'typeorm';
+import { Like, Raw, Repository } from 'typeorm';
 
 import { CreateClientDto, UpdateClientDto, ClientListDto } from './dto';
 import { Client } from './entities';
@@ -50,13 +50,23 @@ export class ClientsService {
    * related to each client.
    * @returns A ResponseGenericDto<ClientListDto>
    */
-  async findAll({ page, rows }: queryParamsDto): Promise<any> {
+  async findAll({ page, rows, search }: queryParamsDto): Promise<any> {
     try {
       const { skip, take } = pagination({ page, rows });
 
       const data = await this.clientRepository.findAndCount({
         take,
-        where: { status: true },
+        where: search
+          ? [
+              { id: Raw(`id::text LIKE '%2%'`) },
+              {
+                name: Like(`%${search}%`),
+              },
+              {
+                cellphone: Like(`%${search}%`),
+              },
+            ]
+          : { status: true },
         select: { id: true, name: true, email: true, cellphone: true },
         order: {
           id: 'ASC',
