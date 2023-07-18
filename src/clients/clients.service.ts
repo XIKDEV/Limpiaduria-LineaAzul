@@ -58,13 +58,14 @@ export class ClientsService {
         take,
         where: search
           ? [
-              { id: Raw(`id::text LIKE '%2%'`) },
+              isNaN(Number(search)) ? {} : { id: Number(search) },
               {
                 name: Like(`%${search}%`),
               },
               {
                 cellphone: Like(`%${search}%`),
               },
+              { status: true },
             ]
           : { status: true },
         select: { id: true, name: true, email: true, cellphone: true },
@@ -74,13 +75,15 @@ export class ClientsService {
         skip,
       });
 
+      const pageSelect = skip / 10;
+
       return new ResponseGenericDto<ClientListDto>(ClientListDto).createResponse(
         true,
         EGenericResponse.found,
         data[0],
         {
           count: data[1],
-          page: skip / 10,
+          page: pageSelect + 1,
           rows: take,
         }
       );

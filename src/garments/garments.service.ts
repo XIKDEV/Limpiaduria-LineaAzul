@@ -63,13 +63,14 @@ export class GarmentsService {
         take,
       });
 
+      const pageSelect = skip / 10;
       return new ResponseGenericDto().createResponse(
         true,
         EGenericResponse.found,
         data[0],
         {
           count: data[1],
-          page: skip / 10,
+          page: pageSelect + 1,
           rows: take,
         }
       );

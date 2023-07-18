@@ -146,6 +146,8 @@ export class NotesService {
         skip,
         take,
       });
+      const pageSelect = skip / 10;
+
       return new ResponseGenericDto().createResponse(
         true,
         EGenericResponse.found,
@@ -180,7 +182,7 @@ export class NotesService {
         }),
         {
           count: data[1],
-          page: skip / 10,
+          page: pageSelect + 1,
           rows: take,
         }
       );
@@ -232,13 +234,15 @@ export class NotesService {
         })),
       }));
 
+      const pageSelect = skip / 10;
+
       return new ResponseGenericDto().createResponse(
         true,
         EGenericResponse.found,
         mappedNotes,
         {
           count: data[1],
-          page: skip / 10,
+          page: pageSelect + 1,
           rows: take,
         }
       );
