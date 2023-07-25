@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -8,7 +8,6 @@ import { ClientsModule } from './clients/clients.module';
 import { GarmentsModule } from './garments/garments.module';
 import { NotesModule } from './notes/notes.module';
 import { CatchFilter } from './common/filter/catch.filter';
-import { SocketNotesModule } from './socket-notes/socket-notes.module';
 
 @Module({
   imports: [
@@ -17,6 +16,10 @@ import { SocketNotesModule } from './socket-notes/socket-notes.module';
       envFilePath: ['.env', '.env.prod'],
     }),
     TypeOrmModule.forRoot({
+      ssl: true,
+      extra: {
+        ssl: { rejectUnauthorized: false },
+      },
       type: 'postgres',
       host: process.env.HOST_BD,
       port: Number(process.env.PORT_BD),
@@ -29,7 +32,6 @@ import { SocketNotesModule } from './socket-notes/socket-notes.module';
     ClientsModule,
     GarmentsModule,
     NotesModule,
-    SocketNotesModule,
   ],
   providers: [
     {

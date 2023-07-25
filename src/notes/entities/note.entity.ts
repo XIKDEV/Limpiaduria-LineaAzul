@@ -71,12 +71,12 @@ export class Note {
   cancel: boolean;
 
   @Column('date', {
-    default: new Date().toLocaleDateString('en-US'),
+    default: new Date(),
   })
   createdAt: string;
 
   @Column('date', {
-    default: new Date().toLocaleDateString('en-US'),
+    default: new Date(),
     select: false,
   })
   updatedAt: string;

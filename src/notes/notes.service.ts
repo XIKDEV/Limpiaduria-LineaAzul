@@ -11,9 +11,11 @@ import {
   ResponseGenericDto,
   EGenericResponse,
   EExceptionsOptions,
+  pagination,
 } from '../common';
 import { CreateNoteDto } from './dto';
 import { Note, DetailNote } from './entities';
+import { queryParamsDto } from '../clients';
 
 @Injectable()
 export class NotesService {
@@ -129,9 +131,10 @@ export class NotesService {
    *       "name": "Juan",
    *       "lastname": "P
    */
-  async findAll() {
+  async findAll({ page, rows }: queryParamsDto) {
     try {
-      const data = await this.noteRepository.find({
+      const { skip, take } = pagination({ page, rows });
+      const data = await this.noteRepository.findAndCount({
         relations: {
           details: true,
           client: true,
@@ -140,11 +143,15 @@ export class NotesService {
           status: false,
           cancel: false,
         },
+        skip,
+        take,
       });
+      const pageSelect = skip / 10;
+
       return new ResponseGenericDto().createResponse(
         true,
         EGenericResponse.found,
-        data.map((note) => {
+        data[0].map((note) => {
           const { client, amount, missing_pay, id, createdAt: created } = note;
           const { email, cellphone, ...clientInfo } = client;
 
@@ -172,7 +179,12 @@ export class NotesService {
               };
             }),
           };
-        })
+        }),
+        {
+          count: data[1],
+          page: pageSelect + 1,
+          rows: take,
+        }
       );
     } catch (error) {
       return this.errorCatch.exceptionsOptions(error);
@@ -194,9 +206,10 @@ export class NotesService {
    *       "id": 1,
    *       "name": "
    */
-  async findAllSearchService() {
+  async findAllSearchService({ page, rows }: queryParamsDto) {
     try {
-      const data = await this.noteRepository.find({
+      const { skip, take } = pagination({ page, rows });
+      const data = await this.noteRepository.findAndCount({
         relations: {
           details: true,
           client: true,
@@ -204,9 +217,11 @@ export class NotesService {
         where: {
           cancel: false,
         },
+        skip,
+        take,
       });
 
-      const mappedNotes = data.map((note) => ({
+      const mappedNotes = data[0].map((note) => ({
         id: note.id,
         created: note.createdAt,
         statusNote: note.status,
@@ -219,10 +234,17 @@ export class NotesService {
         })),
       }));
 
+      const pageSelect = skip / 10;
+
       return new ResponseGenericDto().createResponse(
         true,
         EGenericResponse.found,
-        mappedNotes
+        mappedNotes,
+        {
+          count: data[1],
+          page: pageSelect + 1,
+          rows: take,
+        }
       );
     } catch (error) {
       return this.errorCatch.exceptionsOptions(error);

@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Note } from '../../notes/entities';
 
-@Entity('clients')
+@Entity({ name: 'clients' })
 export class Client {
   @PrimaryGeneratedColumn('identity')
   @ApiProperty()
@@ -31,13 +31,13 @@ export class Client {
   status: boolean;
 
   @Column('date', {
-    default: new Date().toLocaleDateString('en-US'),
+    default: new Date(),
     select: false,
   })
   createdAt: Date;
 
   @Column('date', {
-    default: new Date().toLocaleDateString('en-US'),
+    default: new Date(),
     select: false,
   })
   updatedAt: Date;

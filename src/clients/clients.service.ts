@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Repository } from 'typeorm';
+import { Like, Raw, Repository } from 'typeorm';
 
 import { CreateClientDto, UpdateClientDto, ClientListDto } from './dto';
 import { Client } from './entities';
@@ -11,8 +11,10 @@ import {
   ResponseGenericInfoDto,
   ErrorCatchService,
   ResponseGenericDto,
+  pagination,
 } from '../common';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
+import { queryParamsDto } from './dto/query-params.dto';
 
 @Injectable()
 export class ClientsService {
@@ -48,29 +50,42 @@ export class ClientsService {
    * related to each client.
    * @returns A ResponseGenericDto<ClientListDto>
    */
-  async findAll(): Promise<any> {
+  async findAll({ page, rows, search }: queryParamsDto): Promise<any> {
     try {
-      const data = await this.clientRepository.find({
-        where: { status: true },
+      const { skip, take } = pagination({ page, rows });
+
+      const data = await this.clientRepository.findAndCount({
+        take,
+        where: search
+          ? [
+              isNaN(Number(search)) ? {} : { id: Number(search) },
+              {
+                name: Like(`%${search}%`),
+              },
+              {
+                cellphone: Like(`%${search}%`),
+              },
+              { status: true },
+            ]
+          : { status: true },
         select: { id: true, name: true, email: true, cellphone: true },
         order: {
           id: 'ASC',
         },
-        relations: {
-          notes: true,
-        },
+        skip,
       });
+
+      const pageSelect = skip / 10;
 
       return new ResponseGenericDto<ClientListDto>(ClientListDto).createResponse(
         true,
         EGenericResponse.found,
-        data.map((client) => ({
-          ...client,
-          notes: client.notes.map((note) => {
-            const { client, ...noteRest } = note;
-            return { ...noteRest };
-          }),
-        }))
+        data[0],
+        {
+          count: data[1],
+          page: pageSelect + 1,
+          rows: take,
+        }
       );
     } catch (error) {
       return this.errorCatch.exceptionsOptions(error);
@@ -95,21 +110,6 @@ export class ClientsService {
     }
   }
 
-  /**
-   * "I'm trying to get the client's notes, but I don't want to get the client's data in the notes."
-   * </code>
-   * @param {number} id - number
-   * @returns {
-   *   "success": true,
-   *   "message": "Cliente encontrado",
-   *   "data": {
-   *     "id": 1,
-   *     "name": "Cliente 1",
-   *     "email": "cliente1@gmail.com",
-   *     "phone": "123456789",
-   *     "notes": [
-   *       {
-   */
   async findOne(id: number) {
     try {
       const data = await this.clientRepository.findOne({

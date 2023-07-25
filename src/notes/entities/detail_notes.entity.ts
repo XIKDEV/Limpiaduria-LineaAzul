@@ -48,12 +48,12 @@ export class DetailNote {
   active: boolean;
 
   @Column('date', {
-    default: new Date().toLocaleDateString('en-US'),
+    default: new Date(),
   })
   createdAt: string;
 
   @Column('date', {
-    default: new Date().toLocaleDateString('en-US'),
+    default: new Date(),
     select: false,
   })
   updatedAt: string;
