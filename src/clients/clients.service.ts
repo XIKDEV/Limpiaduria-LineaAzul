@@ -58,7 +58,6 @@ export class ClientsService {
         take,
         where: search
           ? [
-              isNaN(Number(search)) ? {} : { id: Number(search) },
               {
                 name: Like(`%${search}%`),
               },

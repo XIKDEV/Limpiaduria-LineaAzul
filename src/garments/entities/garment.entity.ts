@@ -17,7 +17,7 @@ export class Garment {
   @ApiProperty()
   id: number;
 
-  @Column('decimal', {
+  @Column('varchar', {
     nullable: true,
   })
   @Index({
@@ -25,7 +25,7 @@ export class Garment {
     where: '(status=true)',
   })
   @ApiProperty()
-  code_garment: number;
+  code_garment: string;
 
   @Column('text', {
     nullable: true,
@@ -69,7 +69,6 @@ export class Garment {
 
   @AfterLoad()
   stringToNumber(): void {
-    this.code_garment = Number(this.code_garment);
     this.price = Number(this.price);
   }
 }
