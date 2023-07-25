@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import * as dayjs from 'dayjs';
 import { Repository } from 'typeorm';
 
 import { Garment } from '../garments/entities';
@@ -315,7 +316,7 @@ export class NotesService {
       const data = await this.noteRepository.update(id, {
         missing_pay: 0,
         status: true,
-        updatedAt: new Date().toLocaleDateString('en-US'),
+        updatedAt: dayjs().format('YYYY-MM-DD'),
       });
 
       if (!data) throw new Error(EExceptionsOptions.notFoundNote);
@@ -340,7 +341,7 @@ export class NotesService {
       const data = await this.noteRepository.preload({
         id,
         cancel: true,
-        updatedAt: new Date().toLocaleDateString('en-US'),
+        updatedAt: dayjs().format('YYYY-MM-DD'),
       });
 
       if (!data) throw new Error(EExceptionsOptions.notFoundNote);
@@ -351,7 +352,7 @@ export class NotesService {
         },
         {
           active: false,
-          updatedAt: new Date().toLocaleDateString('en-US'),
+          updatedAt: dayjs().format('YYYY-MM-DD'),
         }
       );
 

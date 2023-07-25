@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import * as dayjs from 'dayjs';
 import { Like, Repository } from 'typeorm';
 
 import { CreateGarmentDto, UpdateGarmentDto } from './dto';
@@ -128,7 +129,7 @@ export class GarmentsService {
       const data = await this.garmentRepository.preload({
         id: idGarment,
         ...updateGarmentDto,
-        updatedAt: new Date().toLocaleDateString('en-US'),
+        updatedAt: dayjs().format('YYYY-MM-DD'),
       });
 
       if (!data) throw new Error(EExceptionsOptions.notFoundGarment);
@@ -156,7 +157,7 @@ export class GarmentsService {
     try {
       const data = await this.garmentRepository.update(
         { id },
-        { status: false, updatedAt: new Date().toLocaleDateString('en-US') }
+        { status: false, updatedAt: dayjs().format('YYYY-MM-DD') }
       );
 
       if (!data) throw new Error(EExceptionsOptions.notFoundGarment);

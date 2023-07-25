@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
   ViewColumn,
 } from 'typeorm';
+import * as dayjs from 'dayjs';
 
 import { DetailNote } from '../../notes/entities/detail_notes.entity';
 
@@ -53,13 +54,13 @@ export class Garment {
   status: boolean;
 
   @Column('date', {
-    default: new Date(),
+    default: dayjs().format('YYYY-MM-DD'),
     select: false,
   })
   createdAt: Date;
 
   @Column('date', {
-    default: new Date(),
+    default: dayjs().format('YYYY-MM-DD'),
     select: false,
   })
   updatedAt: Date;
