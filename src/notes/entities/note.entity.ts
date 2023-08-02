@@ -81,6 +81,10 @@ export class Note {
     select: false,
   })
   updatedAt: string;
+  @Column('varchar', {
+    nullable: false,
+  })
+  folio: string;
 
   @AfterLoad()
   stringToNumber(): void {
