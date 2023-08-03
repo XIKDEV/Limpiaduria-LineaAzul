@@ -38,7 +38,7 @@ export class GarmentsController {
     restApi: ERestApi.getOne,
     url: 'GarmentInfo/:code_garment',
   })
-  findOne(@Param('code_garment', ParseFloatPipe) code_garment: number) {
+  findOne(@Param('code_garment') code_garment: string) {
     return this.garmentsService.findOne(code_garment);
   }
 

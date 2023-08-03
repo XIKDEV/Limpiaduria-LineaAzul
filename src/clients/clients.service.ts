@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Like, Raw, Repository } from 'typeorm';
+import * as dayjs from 'dayjs';
 
 import { CreateClientDto, UpdateClientDto, ClientListDto } from './dto';
 import { Client } from './entities';
@@ -58,14 +59,14 @@ export class ClientsService {
         take,
         where: search
           ? [
-              isNaN(Number(search)) ? {} : { id: Number(search) },
               {
                 name: Like(`%${search}%`),
+                status: true,
               },
               {
                 cellphone: Like(`%${search}%`),
+                status: true,
               },
-              { status: true },
             ]
           : { status: true },
         select: { id: true, name: true, email: true, cellphone: true },
@@ -156,7 +157,7 @@ export class ClientsService {
       const data = await this.clientRepository.preload({
         id: idClient,
         ...updateClientDto,
-        updatedAt: new Date().toLocaleDateString('en-US'),
+        updatedAt: dayjs().format('YYYY-MM-DD'),
       });
 
       if (!data) throw new Error(EExceptionsOptions.notFoundClient);
@@ -183,7 +184,7 @@ export class ClientsService {
     try {
       const data = this.clientRepository.update(
         { id: idClient },
-        { status: false, updatedAt: new Date().toLocaleDateString('en-US') }
+        { status: false, updatedAt: dayjs().format('YYYY-MM-DD') }
       );
 
       if (!data) throw new Error(EExceptionsOptions.notFoundClient);

@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
   ViewColumn,
 } from 'typeorm';
+import * as dayjs from 'dayjs';
 
 import { DetailNote } from '../../notes/entities/detail_notes.entity';
 
@@ -17,7 +18,7 @@ export class Garment {
   @ApiProperty()
   id: number;
 
-  @Column('decimal', {
+  @Column('varchar', {
     nullable: true,
   })
   @Index({
@@ -25,7 +26,7 @@ export class Garment {
     where: '(status=true)',
   })
   @ApiProperty()
-  code_garment: number;
+  code_garment: string;
 
   @Column('text', {
     nullable: true,
@@ -53,13 +54,13 @@ export class Garment {
   status: boolean;
 
   @Column('date', {
-    default: new Date(),
+    default: dayjs().format('YYYY-MM-DD'),
     select: false,
   })
   createdAt: Date;
 
   @Column('date', {
-    default: new Date(),
+    default: dayjs().format('YYYY-MM-DD'),
     select: false,
   })
   updatedAt: Date;
@@ -69,7 +70,6 @@ export class Garment {
 
   @AfterLoad()
   stringToNumber(): void {
-    this.code_garment = Number(this.code_garment);
     this.price = Number(this.price);
   }
 }
