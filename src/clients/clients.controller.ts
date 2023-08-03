@@ -28,6 +28,14 @@ export class ClientsController {
   }
 
   @Swagger({
+    restApi: ERestApi.getAll,
+    url: 'select',
+  })
+  select() {
+    return this.clientsService.select();
+  }
+
+  @Swagger({
     restApi: ERestApi.getOne,
     url: 'ClientInfo/:id',
   })

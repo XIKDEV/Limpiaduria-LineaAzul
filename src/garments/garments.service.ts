@@ -91,6 +91,23 @@ export class GarmentsService {
     }
   }
 
+  async select() {
+    try {
+      const data = await this.garmentRepository
+        .createQueryBuilder('garments')
+        .select('code_garment')
+        .addSelect('description', 'text')
+        .getRawMany();
+      return new ResponseGenericDto().createResponse(
+        true,
+        EGenericResponse.found,
+        data
+      );
+    } catch (error) {
+      return this.errorCatch.exceptionsOptions(error);
+    }
+  }
+
   /**
    * It finds a garment by its code_garment and returns a response with the data or an error.
    * @param {number} code_garment - number

@@ -33,6 +33,13 @@ export class GarmentsController {
   findAll(@Query() pagination: queryParamsDto) {
     return this.garmentsService.findAll(pagination);
   }
+  @Swagger({
+    restApi: ERestApi.getAll,
+    url: 'select',
+  })
+  select() {
+    return this.garmentsService.select();
+  }
 
   @Swagger({
     restApi: ERestApi.getOne,
