@@ -6,6 +6,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import * as dayjs from 'dayjs';
 
 import { DetailNote } from './detail_notes.entity';
 import { Client } from '../../clients/entities/client.entity';
@@ -71,15 +72,19 @@ export class Note {
   cancel: boolean;
 
   @Column('date', {
-    default: new Date().toLocaleDateString('en-US'),
+    default: dayjs().format('YYYY-MM-DD'),
   })
   createdAt: string;
 
   @Column('date', {
-    default: new Date().toLocaleDateString('en-US'),
+    default: dayjs().format('YYYY-MM-DD'),
     select: false,
   })
   updatedAt: string;
+  @Column('varchar', {
+    nullable: false,
+  })
+  folio: string;
 
   @AfterLoad()
   stringToNumber(): void {

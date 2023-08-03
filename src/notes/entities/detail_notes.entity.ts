@@ -1,3 +1,4 @@
+import * as dayjs from 'dayjs';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Note } from './note.entity';
@@ -48,12 +49,12 @@ export class DetailNote {
   active: boolean;
 
   @Column('date', {
-    default: new Date().toLocaleDateString('en-US'),
+    default: dayjs().format('YYYY-MM-DD'),
   })
   createdAt: string;
 
   @Column('date', {
-    default: new Date().toLocaleDateString('en-US'),
+    default: dayjs().format('YYYY-MM-DD'),
     select: false,
   })
   updatedAt: string;

@@ -1,9 +1,10 @@
-import { Controller, Body, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Body, Param, ParseIntPipe, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { Swagger, ERestApi } from '../common';
 import { ClientsService } from './clients.service';
 import { UpdateClientDto, CreateClientDto } from './dto';
+import { queryParamsDto } from './dto/query-params.dto';
 
 @Controller('clients')
 @ApiTags('Client')
@@ -22,8 +23,8 @@ export class ClientsController {
     restApi: ERestApi.getAll,
     url: 'ClientsList',
   })
-  findAll() {
-    return this.clientsService.findAll();
+  findAll(@Query() pagination: queryParamsDto) {
+    return this.clientsService.findAll(pagination);
   }
 
   @Swagger({

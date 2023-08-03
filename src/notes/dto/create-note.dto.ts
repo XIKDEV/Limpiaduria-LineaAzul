@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 import { DetailNote } from '../entities';
 
@@ -10,6 +10,12 @@ export class CreateNoteDto {
     example: 1,
   })
   client: number;
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    example: 1,
+  })
+  folio: string;
 
   @IsNumber()
   @IsNotEmpty()

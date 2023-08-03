@@ -1,0 +1,19 @@
+{
+  "docwriter.style": "JSDoc",
+  "docwriter.progress.trackMethods": true,
+  "deepscan.enable": true,
+  "material-icon-theme.activeIconPack": "nest",
+  "editor.tabSize": 2,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "conventionalCommits.scopes": [
+    "messages",
+    "user",
+    "fileSytem",
+    "fileSystem",
+    "config",
+    "System",
+    "response",
+    "notes"
+  ]
+}

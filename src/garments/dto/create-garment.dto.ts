@@ -2,12 +2,12 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateGarmentDto {
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
   @ApiProperty({
     example: 1.2,
   })
-  code_garment: number;
+  code_garment: string;
 
   @IsString()
   @IsNotEmpty()
