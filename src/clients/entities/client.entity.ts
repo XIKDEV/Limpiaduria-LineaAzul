@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import * as dayjs from 'dayjs';
 
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Note } from '../../notes/entities';
@@ -31,13 +32,13 @@ export class Client {
   status: boolean;
 
   @Column('date', {
-    default: new Date(),
+    default: dayjs().format('YYYY-MM-DD'),
     select: false,
   })
   createdAt: Date;
 
   @Column('date', {
-    default: new Date(),
+    default: dayjs().format('YYYY-MM-DD'),
     select: false,
   })
   updatedAt: Date;

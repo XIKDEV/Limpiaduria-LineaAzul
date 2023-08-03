@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Repository } from 'typeorm';
+import * as dayjs from 'dayjs';
+import { Like, Repository } from 'typeorm';
 
 import { Garment } from '../garments/entities';
 import { Client } from '../clients/entities';
@@ -131,7 +132,7 @@ export class NotesService {
    *       "name": "Juan",
    *       "lastname": "P
    */
-  async findAll({ page, rows }: queryParamsDto) {
+  async findAll({ page, rows, search }: queryParamsDto) {
     try {
       const { skip, take } = pagination({ page, rows });
       const data = await this.noteRepository.findAndCount({
@@ -139,10 +140,23 @@ export class NotesService {
           details: true,
           client: true,
         },
-        where: {
-          status: false,
-          cancel: false,
-        },
+        where: search
+          ? [
+              {
+                folio: Like(`%${search}%`),
+                cancel: false,
+                status: false,
+              },
+              {
+                client: { name: Like(`%${search}%`) },
+                cancel: false,
+                status: false,
+              },
+            ]
+          : {
+              cancel: false,
+              status: false,
+            },
         skip,
         take,
       });
@@ -152,11 +166,19 @@ export class NotesService {
         true,
         EGenericResponse.found,
         data[0].map((note) => {
-          const { client, amount, missing_pay, id, createdAt: created } = note;
+          const {
+            client,
+            amount,
+            missing_pay,
+            id,
+            folio,
+            createdAt: created,
+          } = note;
           const { email, cellphone, ...clientInfo } = client;
 
           return {
             id,
+            folio,
             created,
             amount,
             missing_pay,
@@ -206,7 +228,7 @@ export class NotesService {
    *       "id": 1,
    *       "name": "
    */
-  async findAllSearchService({ page, rows }: queryParamsDto) {
+  async findAllSearchService({ page, rows, search }: queryParamsDto) {
     try {
       const { skip, take } = pagination({ page, rows });
       const data = await this.noteRepository.findAndCount({
@@ -214,15 +236,27 @@ export class NotesService {
           details: true,
           client: true,
         },
-        where: {
-          cancel: false,
-        },
+        where: search
+          ? [
+              {
+                folio: Like(`%${search}%`),
+                cancel: false,
+              },
+              {
+                client: { name: Like(`%${search}%`) },
+                cancel: false,
+              },
+            ]
+          : {
+              cancel: false,
+            },
         skip,
         take,
       });
 
       const mappedNotes = data[0].map((note) => ({
         id: note.id,
+        folio: note.folio,
         created: note.createdAt,
         statusNote: note.status,
         amount: note.amount,
@@ -315,7 +349,7 @@ export class NotesService {
       const data = await this.noteRepository.update(id, {
         missing_pay: 0,
         status: true,
-        updatedAt: new Date().toLocaleDateString('en-US'),
+        updatedAt: dayjs().format('YYYY-MM-DD'),
       });
 
       if (!data) throw new Error(EExceptionsOptions.notFoundNote);
@@ -340,7 +374,7 @@ export class NotesService {
       const data = await this.noteRepository.preload({
         id,
         cancel: true,
-        updatedAt: new Date().toLocaleDateString('en-US'),
+        updatedAt: dayjs().format('YYYY-MM-DD'),
       });
 
       if (!data) throw new Error(EExceptionsOptions.notFoundNote);
@@ -351,7 +385,7 @@ export class NotesService {
         },
         {
           active: false,
-          updatedAt: new Date().toLocaleDateString('en-US'),
+          updatedAt: dayjs().format('YYYY-MM-DD'),
         }
       );
 

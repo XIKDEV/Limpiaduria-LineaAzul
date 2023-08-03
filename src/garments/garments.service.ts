@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Repository } from 'typeorm';
+import * as dayjs from 'dayjs';
+import { Like, Repository } from 'typeorm';
 
 import { CreateGarmentDto, UpdateGarmentDto } from './dto';
 import { Garment } from './entities';
@@ -48,14 +49,25 @@ export class GarmentsService {
    * It returns a response object with a boolean, a string, and an array of objects.
    * @returns A ResponseGenericDto object.
    */
-  async findAll({ page, rows }: queryParamsDto) {
+  async findAll({ page, rows, search }: queryParamsDto) {
     try {
       const { skip, take } = pagination({ page, rows });
 
       const data = await this.garmentRepository.findAndCount({
-        where: {
-          status: true,
-        },
+        where: search
+          ? [
+              {
+                code_garment: Like(`%${search}%`),
+                status: true,
+              },
+              {
+                description: Like(`%${search}%`),
+                status: true,
+              },
+            ]
+          : {
+              status: true,
+            },
         order: {
           id: 'ASC',
         },
@@ -101,7 +113,7 @@ export class GarmentsService {
    * @param {number} code_garment - number
    * @returns The response is a JSON object with the following structure:
    */
-  async findOne(code_garment: number) {
+  async findOne(code_garment: string) {
     try {
       const data = await this.garmentRepository.findOneBy({
         code_garment,
@@ -134,7 +146,7 @@ export class GarmentsService {
       const data = await this.garmentRepository.preload({
         id: idGarment,
         ...updateGarmentDto,
-        updatedAt: new Date().toLocaleDateString('en-US'),
+        updatedAt: dayjs().format('YYYY-MM-DD'),
       });
 
       if (!data) throw new Error(EExceptionsOptions.notFoundGarment);
@@ -162,7 +174,7 @@ export class GarmentsService {
     try {
       const data = await this.garmentRepository.update(
         { id },
-        { status: false, updatedAt: new Date().toLocaleDateString('en-US') }
+        { status: false, updatedAt: dayjs().format('YYYY-MM-DD') }
       );
 
       if (!data) throw new Error(EExceptionsOptions.notFoundGarment);
