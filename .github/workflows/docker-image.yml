@@ -1,0 +1,32 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Docker config
+      uses: actions/checkout@v3
+    
+    - name: Docker login
+      env:
+        DOCKER_USER: ${{secrets.DOCKER_USER}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+      run: |
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+        
+    - name: Docker Build
+      run: |
+        docker build -t alderickrios/limpiaduria_linea_azul:2.7.0 .
+        
+    - name: Docker Push Image
+      run: |
+        docker push alderickrios/limpiaduria_linea_azul:2.7.0
