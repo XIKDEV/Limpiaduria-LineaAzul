@@ -45,6 +45,20 @@ export class ClientsService {
     }
   }
 
+  async select(): Promise<any> {
+    try {
+      const data = await this.clientRepository
+        .createQueryBuilder('user')
+        .select('id')
+        .addSelect('name', 'text')
+        .getRawMany();
+
+      return new ResponseGenericDto().createResponse(true, 'success', data);
+    } catch (error) {
+      return this.errorCatch.exceptionsOptions(error);
+    }
+  }
+
   /**
    * I'm trying to get all the clients that are active, and I want to get all the notes that are
    * related to each client.
