@@ -13,6 +13,7 @@ import {
   ErrorCatchService,
   ResponseGenericDto,
   pagination,
+  dayjsFormat,
 } from '../common';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { queryParamsDto } from './dto/query-params.dto';
@@ -171,7 +172,7 @@ export class ClientsService {
       const data = await this.clientRepository.preload({
         id: idClient,
         ...updateClientDto,
-        updatedAt: dayjs().format('YYYY-MM-DD'),
+        updatedAt: dayjsFormat(),
       });
 
       if (!data) throw new Error(EExceptionsOptions.notFoundClient);
@@ -198,7 +199,7 @@ export class ClientsService {
     try {
       const data = this.clientRepository.update(
         { id: idClient },
-        { status: false, updatedAt: dayjs().format('YYYY-MM-DD') }
+        { status: false, updatedAt: dayjsFormat() }
       );
 
       if (!data) throw new Error(EExceptionsOptions.notFoundClient);

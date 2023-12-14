@@ -11,6 +11,7 @@ import * as dayjs from 'dayjs';
 import { DetailNote } from './detail_notes.entity';
 import { Client } from '../../clients/entities/client.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { dayjsFormat } from '../../common';
 
 @Entity({ name: 'notes' })
 export class Note {
@@ -72,12 +73,12 @@ export class Note {
   cancel: boolean;
 
   @Column('date', {
-    default: dayjs().format('YYYY-MM-DD'),
+    default: dayjsFormat(),
   })
   createdAt: string;
 
   @Column('date', {
-    default: dayjs().format('YYYY-MM-DD'),
+    default: dayjsFormat(),
     select: false,
   })
   updatedAt: string;

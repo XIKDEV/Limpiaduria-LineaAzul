@@ -11,6 +11,7 @@ import {
 import * as dayjs from 'dayjs';
 
 import { DetailNote } from '../../notes/entities/detail_notes.entity';
+import { dayjsFormat } from '../../common';
 
 @Entity()
 export class Garment {
@@ -54,13 +55,13 @@ export class Garment {
   status: boolean;
 
   @Column('date', {
-    default: dayjs().format('YYYY-MM-DD'),
+    default: dayjsFormat(),
     select: false,
   })
   createdAt: Date;
 
   @Column('date', {
-    default: dayjs().format('YYYY-MM-DD'),
+    default: dayjsFormat(),
     select: false,
   })
   updatedAt: Date;
