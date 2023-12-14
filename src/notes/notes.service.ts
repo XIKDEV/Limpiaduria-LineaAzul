@@ -13,6 +13,7 @@ import {
   EGenericResponse,
   EExceptionsOptions,
   pagination,
+  dayjsFormat,
 } from '../common';
 import { CreateNoteDto } from './dto';
 import { Note, DetailNote } from './entities';
@@ -349,7 +350,7 @@ export class NotesService {
       const data = await this.noteRepository.update(id, {
         missing_pay: 0,
         status: true,
-        updatedAt: dayjs().format('YYYY-MM-DD'),
+        updatedAt: dayjsFormat(),
       });
 
       if (!data) throw new Error(EExceptionsOptions.notFoundNote);
@@ -374,7 +375,7 @@ export class NotesService {
       const data = await this.noteRepository.preload({
         id,
         cancel: true,
-        updatedAt: dayjs().format('YYYY-MM-DD'),
+        updatedAt: dayjsFormat(),
       });
 
       if (!data) throw new Error(EExceptionsOptions.notFoundNote);
@@ -385,7 +386,7 @@ export class NotesService {
         },
         {
           active: false,
-          updatedAt: dayjs().format('YYYY-MM-DD'),
+          updatedAt: dayjsFormat(),
         }
       );
 

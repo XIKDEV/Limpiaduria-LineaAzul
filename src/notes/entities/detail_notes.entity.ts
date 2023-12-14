@@ -5,6 +5,7 @@ import { Note } from './note.entity';
 import { Garment } from '../../garments/entities/garment.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
+import { dayjsFormat } from '../../common';
 
 @Entity({ name: 'detail_notes' })
 export class DetailNote {
@@ -49,12 +50,12 @@ export class DetailNote {
   active: boolean;
 
   @Column('date', {
-    default: dayjs().format('YYYY-MM-DD'),
+    default: dayjsFormat(),
   })
   createdAt: string;
 
   @Column('date', {
-    default: dayjs().format('YYYY-MM-DD'),
+    default: dayjsFormat(),
     select: false,
   })
   updatedAt: string;

@@ -12,6 +12,7 @@ import {
   ErrorCatchService,
   ResponseGenericDto,
   ResponseGenericInfoDto,
+  dayjsFormat,
   pagination,
 } from '../common';
 import { queryParamsDto } from '../clients';
@@ -146,7 +147,7 @@ export class GarmentsService {
       const data = await this.garmentRepository.preload({
         id: idGarment,
         ...updateGarmentDto,
-        updatedAt: dayjs().format('YYYY-MM-DD'),
+        updatedAt: dayjsFormat(),
       });
 
       if (!data) throw new Error(EExceptionsOptions.notFoundGarment);
@@ -174,7 +175,7 @@ export class GarmentsService {
     try {
       const data = await this.garmentRepository.update(
         { id },
-        { status: false, updatedAt: dayjs().format('YYYY-MM-DD') }
+        { status: false, updatedAt: dayjsFormat() }
       );
 
       if (!data) throw new Error(EExceptionsOptions.notFoundGarment);

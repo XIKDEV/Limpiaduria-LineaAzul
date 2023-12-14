@@ -3,6 +3,7 @@ import * as dayjs from 'dayjs';
 
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Note } from '../../notes/entities';
+import { dayjsFormat } from '../../common';
 
 @Entity({ name: 'clients' })
 export class Client {
@@ -32,13 +33,13 @@ export class Client {
   status: boolean;
 
   @Column('date', {
-    default: dayjs().format('YYYY-MM-DD'),
+    default: dayjsFormat(),
     select: false,
   })
   createdAt: Date;
 
   @Column('date', {
-    default: dayjs().format('YYYY-MM-DD'),
+    default: dayjsFormat(),
     select: false,
   })
   updatedAt: Date;
