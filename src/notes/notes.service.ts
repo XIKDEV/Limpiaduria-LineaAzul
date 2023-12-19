@@ -48,7 +48,7 @@ export class NotesService {
    */
   async create(createNoteDto: CreateNoteDto) {
     try {
-      const { details = [], client, ...createDetail } = createNoteDto;
+      const { details = [], client, folio, ...createDetail } = createNoteDto;
 
       const idClient = await this.clientRepository.findOne({
         where: {
@@ -59,9 +59,15 @@ export class NotesService {
         },
       });
 
+      const noteExist = this.noteRepository.findOne({
+        where: { folio },
+      });
+
       if (!idClient) throw new Error(EExceptionsOptions.notFoundClient);
+
       const data = this.noteRepository.create({
         ...createDetail,
+        folio: noteExist ? String(Number(folio) + 1) : folio,
         client: idClient,
         details: details.map(
           ({ id_g, price, quantity_receive, quantity_by_garments }) =>
