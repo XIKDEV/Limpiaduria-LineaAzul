@@ -379,13 +379,19 @@ export class NotesService {
    */
   async remove(id: any) {
     try {
-      const data = await this.noteRepository.preload({
-        id,
-        cancel: true,
-        updatedAt: dayjsFormat(),
+      const data = await this.noteRepository.findOne({
+        where: { id },
       });
 
       if (!data) throw new Error(EExceptionsOptions.notFoundNote);
+
+      await this.noteRepository.update(
+        {
+          id,
+          cancel: false,
+        },
+        { cancel: true, updatedAt: dayjsFormat() }
+      );
 
       await this.detailNoteRepository.update(
         {
@@ -396,8 +402,6 @@ export class NotesService {
           updatedAt: dayjsFormat(),
         }
       );
-
-      await this.noteRepository.save(data);
 
       return new ResponseGenericInfoDto().createResponse(
         true,

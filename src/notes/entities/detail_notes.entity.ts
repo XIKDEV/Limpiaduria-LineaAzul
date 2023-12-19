@@ -44,7 +44,7 @@ export class DetailNote {
   price: number;
 
   @Column('boolean', {
-    default: false,
+    default: true,
     select: false,
   })
   active: boolean;
