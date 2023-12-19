@@ -53,6 +53,7 @@ export class ClientsService {
         .createQueryBuilder('user')
         .select('id')
         .addSelect('name', 'text')
+        .where('status =:status', { status: true })
         .getRawMany();
 
       return new ResponseGenericDto().createResponse(true, 'success', data);
