@@ -98,6 +98,7 @@ export class GarmentsService {
         .createQueryBuilder('garments')
         .select('code_garment')
         .addSelect('description', 'text')
+        .where('status =:active', { active: true })
         .getRawMany();
       return new ResponseGenericDto().createResponse(
         true,
