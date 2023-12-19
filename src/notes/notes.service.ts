@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import * as dayjs from 'dayjs';
-import { Like, Repository } from 'typeorm';
+import { Like, MoreThan, Repository } from 'typeorm';
 
 import { Garment } from '../garments/entities';
 import { Client } from '../clients/entities';
@@ -59,15 +59,16 @@ export class NotesService {
         },
       });
 
-      const noteExist = this.noteRepository.findOne({
-        where: { folio },
+      const noteExist = await this.noteRepository.find({
+        where: { id: MoreThan(Number(folio) - 5) },
+        order: { id: 'DESC' },
       });
 
       if (!idClient) throw new Error(EExceptionsOptions.notFoundClient);
 
       const data = this.noteRepository.create({
         ...createDetail,
-        folio: noteExist ? String(Number(folio) + 1) : folio,
+        folio: String(noteExist[0].id + 1),
         client: idClient,
         details: details.map(
           ({ id_g, price, quantity_receive, quantity_by_garments }) =>
