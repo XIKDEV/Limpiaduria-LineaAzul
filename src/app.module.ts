@@ -19,10 +19,10 @@ import { DetailNote, Note } from './notes/entities';
       envFilePath: ['.env', '.env.prod'],
     }),
     TypeOrmModule.forRoot({
-      // ssl: true,
-      // extra: {
-      //   ssl: { rejectUnauthorized: false },
-      // },
+      ssl: true,
+      extra: {
+        ssl: { rejectUnauthorized: false },
+      },
       type: 'postgres',
       host: process.env.HOST_BD,
       port: Number(process.env.PORT_BD),
