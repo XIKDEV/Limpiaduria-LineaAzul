@@ -1,4 +1,4 @@
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
@@ -7,6 +7,8 @@ import { CatchFilter } from './common/filter/catch.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  const logger = new Logger();
 
   app.enableCors();
 
@@ -36,5 +38,8 @@ async function bootstrap() {
   }
 
   await app.listen(process.env.PORT || 3000);
+  logger.verbose(
+    'Favor de no cerrar esta ventana, se esta ejecutando en modo desarrollo'
+  );
 }
 bootstrap();
